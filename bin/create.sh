@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-if [ "$1" == "scaleway" ]; then
+if [ "$1" == "aws" ]; then
     echo "Download Ansible Galaxy"
     ansible-galaxy install GoContainer.system-update            >> /dev/null 2>&1
 	ansible-galaxy install AerisCloud.disk                      >> /dev/null 2>&1

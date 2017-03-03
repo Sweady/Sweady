@@ -1,4 +1,3 @@
-
 resource "scaleway_server" "swarm_node" {
   name  = "swarm_node-${count.index + 1}"
   image = "${data.scaleway_image.docker.id}"
