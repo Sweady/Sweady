@@ -1,0 +1,72 @@
+version: '3'
+
+volumes:
+    prometheus_config:
+      driver: local-persist
+      driver_opts:
+        mountpoint: '/mnt/data/monitoring/prometheus/config'
+    prometheus_data:
+      driver: local-persist
+      driver_opts:
+        mountpoint: '/mnt/data/monitoring/prometheus/data'
+    grafana_data:
+      driver: local-persist
+      driver_opts:
+        mountpoint: '/mnt/data/monitoring/grafana/data'
+
+networks:
+  monitoring:
+    driver: overlay
+
+services:
+  prometheus:
+    image: prom/prometheus
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
+    volumes:
+      - prometheus_config:/etc/prometheus/
+      - prometheus_data:/prometheus
+    command:
+      - '-config.file=/etc/prometheus/prometheus.yml'
+      - '-storage.local.path=/prometheus'
+      - '-storage.local.retention=48h'
+    depends_on:
+      - cadvisor
+    networks:
+      - monitoring
+
+  node-exporter:
+    image: prom/node-exporter
+    deploy:
+      mode: global
+    networks:
+      - monitoring
+
+  cadvisor:
+    image: google/cadvisor
+    deploy:
+      mode: global
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    networks:
+      - monitoring
+
+  grafana:
+    image: grafana/grafana
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
+    depends_on:
+      - prometheus
+    ports:
+      - '3000:3000'
+    volumes:
+      - grafana_data:/var/lib/grafana
+    networks:
+      - monitoring

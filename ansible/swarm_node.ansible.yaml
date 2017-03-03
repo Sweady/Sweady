@@ -1,0 +1,32 @@
+---
+- hosts: all
+  user: root
+  become: true
+  vars:
+    gluster_mount_dir: /mnt/data
+    gluster_brick_name: gluster
+
+  pre_tasks:
+    - name: Clear file
+      command: rm -rf /etc/apt/apt.conf.d/50unattended-upgrades*
+
+  roles:
+    - GoContainer.system-update
+    - GoContainer.docker-local-persist
+
+  tasks:
+    - name: Clone project
+      git:
+        repo: https://github.com/GoContainer/Sweady.git
+        dest: /tmp/sweady
+
+#    - name: Config for Prometheus
+#      copy:
+#        src: /tmp/sweady/namespace/monitoring/prometheus/prometheus.yml
+#        dest: /mnt/data/monitoring/prometheus/config/prometheus.yml
+#        owner: root
+#        group: root
+#        mode: 0755
+#
+#    - name: Deploy monitoring stack
+#      command: docker stack deploy -c /tmp/sweady/namespace/monitoring/docker-compose.yml monitoring
