@@ -11,14 +11,24 @@ variable "aws_region" {
   description = "AWS Region"
 }
 
-variable "aws_type_node" {
-  default     = "t2.micro"
-  description = "Scaleway type for Node"
-}
-
 variable "aws_key_name" {
   default     = ""
   description = "AWS key name"
+}
+
+variable "aws_type_manager" {
+  default     = "t2.micro"
+  description = "AWS type for manager"
+}
+
+variable "aws_type_node" {
+  default     = "t2.micro"
+  description = "AWS type for node"
+}
+
+variable "aws_type_glusterfs" {
+  default     = "t2.micro"
+  description = "AWS type for glusterfs"
 }
 
 variable "aws_ami" {
@@ -39,4 +49,9 @@ variable "aws_ssh_key" {
 variable "swarm_nodes" {
   default     = 1
   description = "Number of nodes in the cluster"
+}
+
+variable "swarm_glusterfs" {
+  default     = 4
+  description = "Number of glusterfs in the cluster"
 }

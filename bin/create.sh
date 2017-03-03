@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-if [ "$1" == "scaleway" ]; then
+if [ "$1" == "scaleway" ] || [ "$1" == "aws" ]; then
     echo "Download Ansible Galaxy"
     ansible-galaxy install GoContainer.system-update            >> /dev/null 2>&1
 	ansible-galaxy install AerisCloud.disk                      >> /dev/null 2>&1
@@ -21,5 +21,10 @@ if [ "$1" == "scaleway" ]; then
 	echo [swarm_glusterfs] >> ../../tmp/inventory_ansible_swarm
 	terraform output cluster_swarm_glusterfs >> ../../tmp/inventory_ansible_swarm
 
-	ansible-playbook ./../../ansible/init.ansible.yaml -i ../../tmp/inventory_ansible_swarm
+    if [ "$1" == "scaleway" ]; then
+        ansible-playbook ./../../ansible/init.ansible.yaml -i ../../tmp/inventory_ansible_swarm
+    fi
+    if [ "$1" == "aws" ]; then
+        ansible-playbook ./../../ansible/init.ansible.yaml -i ../../tmp/inventory_ansible_swarm -a "user=ubuntu"
+    fi
 fi
