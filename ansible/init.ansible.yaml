@@ -103,14 +103,21 @@
       git:
         repo: https://github.com/GoContainer/Sweady.git
         dest: /tmp/sweady
+      when: "inventory_hostname == groups.swarm_master[0]"
+
+    - name: Ensures data dir exists
+      file: path=/mnt/data/monitoring/prometheus/config state=directory
+      when: "inventory_hostname == groups.swarm_master[0]"
 
     - name: Config for Prometheus
       copy:
-        src: /tmp/sweady/docker-compose/monitoring/prometheus/prometheus.yml
+        src: ../docker-compose/monitoring/prometheus/prometheus.yml
         dest: /mnt/data/monitoring/prometheus/config/prometheus.yml
         owner: root
         group: root
         mode: 0755
+      when: "inventory_hostname == groups.swarm_master[0]"
 
     - name: Deploy monitoring stack
-      command: docker stack deploy -c /tmp/sweady/docker-compose/monitoring/docker-compose.yml monitoring
+      command: sleep 30 && docker stack deploy -c /tmp/sweady/docker-compose/monitoring/docker-compose.yml monitoring
+      when: "inventory_hostname == groups.swarm_master[0]"
