@@ -4,7 +4,6 @@ aws_region          = "eu-west-1"
 aws_type_node       = "t2.micro"
 aws_type_glusterfs  = "t2.micro"
 aws_type_manager    = "t2.micro"
-aws_ami             = "ami-405f7226"
 aws_ami_user        = "ubuntu"
 aws_ssh_key         = "~/.ssh/id_rsa"
 swarm_nodes         = 1

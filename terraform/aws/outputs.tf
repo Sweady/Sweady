@@ -1,16 +1,11 @@
-output "Docker Swarm Manager(s) Public IPs" {
-  value = "${join("\n               ", formatlist("%s", split(",", aws_instance.swarm_manager.public_ip)))}"
+output "cluster_swarm_node" {
+  value = "${join("\n", aws_instance.swarm_node.*.public_ip)}"
 }
-output "1" {
-  value = "${join("\n               ", formatlist("%s", data.aws_ami.ubuntu.root_device_name))}"
+
+output "cluster_swarm_master" {
+  value = "${join("\n", aws_instance.swarm_manager.*.public_ip)}"
 }
-output "2" {
-  value = "${join("\n               ", formatlist("%s", data.aws_ami.ubuntu.root_device_type))}"
+
+output "cluster_swarm_glusterfs" {
+  value = "${join("\n", aws_instance.swarm_glusterfs.*.public_ip)}"
 }
-output "3" {
-  value = "${join("\n               ", formatlist("%s", data.aws_ami.ubuntu.image_owner_alias))}"
-}
-//
-//output "Docker Swarm Node(s) Public IPs" {
-//  value = "${join("\n               ", formatlist("%s", split(",", aws_instance.swarm_node.*.public_ip)))}"
-//}

@@ -31,11 +31,6 @@ variable "aws_type_glusterfs" {
   description = "AWS type for glusterfs"
 }
 
-variable "aws_ami" {
-  default     = ""
-  description = "AWS ami"
-}
-
 variable "aws_ami_user" {
   default     = "root"
   description = "Ami user connection"
