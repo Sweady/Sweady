@@ -14,11 +14,13 @@ volumes:
   grafana_data:
     driver_opts:
       device: '/mnt/data/monitoring/grafana/data'
+      type: none
+      o: bind
   mongo_data:
     driver_opts:
-        device: '/mnt/data/monitoring/mongo/data'
-        type: none
-        o: bind
+      device: '/mnt/data/monitoring/mongo/data'
+      type: none
+      o: bind
   elastic_data:
     driver_opts:
       device: '/mnt/data/monitoring/elastic/data'
@@ -27,18 +29,18 @@ volumes:
   elastic_config:
     driver_opts:
       device: '/mnt/data/monitoring/elastic/config'
-      type: none
-      o: bind
+        type: none
+        o: bind
   graylog_data:
     driver_opts:
       device: '/mnt/data/monitoring/graylog/data'
-      type: none
-      o: bind
+        type: none
+        o: bind
   graylog_config:
     driver_opts:
       device: '/mnt/data/monitoring/graylog/config'
-      type: none
-      o: bind
+        type: none
+        o: bind
 
 networks:
   monitoring:
