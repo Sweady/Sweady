@@ -29,18 +29,18 @@ volumes:
   elastic_config:
     driver_opts:
       device: '/mnt/data/monitoring/elastic/config'
-        type: none
-        o: bind
+      type: none
+      o: bind
   graylog_data:
     driver_opts:
       device: '/mnt/data/monitoring/graylog/data'
-        type: none
-        o: bind
+      type: none
+      o: bind
   graylog_config:
     driver_opts:
       device: '/mnt/data/monitoring/graylog/config'
-        type: none
-        o: bind
+      type: none
+      o: bind
 
 networks:
   monitoring:
@@ -52,7 +52,7 @@ services:
     deploy:
       placement:
         constraints:
-          - node.role!== manager
+          - node.role !== manager
     volumes:
       - mongo_data:/data/db
 
@@ -61,22 +61,20 @@ services:
     deploy:
       placement:
         constraints:
-          - node.role!== manager
+          - node.role !== manager
     volumes:
       - elastic_data:/usr/share/elasticsearch/data
       - elastic_config:/usr/share/elasticsearch/config
-    command:
-      - 'elasticsearch -Des.cluster.name="graylog"'
 
   graylog:
     image: graylog2/server
     volumes:
       - graylog_data:/usr/share/graylog/data/journal
-      - graylog_config/usr/share/graylog/data/config
+      - graylog_config:/usr/share/graylog/data/config
     environment:
-      GRAYLOG_PASSWORD_SECRET: admin
-      GRAYLOG_ROOT_PASSWORD_SHA2: 8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918
-      GRAYLOG_WEB_ENDPOINT_URI: http://127.0.0.1:9000/api
+      - GRAYLOG_PASSWORD_SECRET=cH5mQ7ANxhh4555T
+      - GRAYLOG_ROOT_PASSWORD_SHA2=031da2e44853d568de256e09e77388ce0e4474a79e7abf3303222aeaec8b7f21
+      - GRAYLOG_WEB_ENDPOINT_URI=http://127.0.0.1:9000/api
     depends_on:
       - mongo
       - elasticsearch
