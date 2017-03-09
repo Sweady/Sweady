@@ -13,12 +13,64 @@ volumes:
       driver: local-persist
       driver_opts:
         mountpoint: '/mnt/data/monitoring/grafana/data'
+    mongo_data:
+      driver: local-persist
+      driver_opts:
+        mountpoint: '/mnt/data/monitoring/mongo/data'
+    elastic_data:
+      driver: local-persist
+      driver_opts:
+        mountpoint: '/mnt/data/monitoring/elastic/data'
+    elastic_config:
+      driver: local-persist
+      driver_opts:
+        mountpoint: '/mnt/data/monitoring/elastic/config'
+    graylog_data:
+      driver: local-persist
+      driver_opts:
+        mountpoint: '/mnt/data/monitoring/graylog/data'
+    graylog_config:
+      driver: local-persist
+      driver_opts:
+        mountpoint: '/mnt/data/monitoring/graylog/config'
 
 networks:
   monitoring:
     driver: overlay
 
 services:
+  mongo:
+    image: mongo:3
+    volumes:
+      - mongo_data:/data/db
+
+  elasticsearch:
+    image: elasticsearch:2-alpine
+    volumes:
+      - elastic_data:/usr/share/elasticsearch/data
+      - elastic_config:/usr/share/elasticsearch/config
+    command:
+      - 'elasticsearch -Des.cluster.name="graylog"'
+
+  graylog:
+    image: graylog2/server
+    volumes:
+      - graylog_data:/usr/share/graylog/data/journal
+      - graylog_config/usr/share/graylog/data/config
+    environment:
+      GRAYLOG_PASSWORD_SECRET: admin
+      GRAYLOG_ROOT_PASSWORD_SHA2: 8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918
+      GRAYLOG_WEB_ENDPOINT_URI: http://127.0.0.1:9000/api
+    depends_on:
+      - mongo
+      - elasticsearch
+    ports:
+      - "9000:9000"
+      - "12201:12201/udp"
+      - "1514:1514/udp"
+
+
+
   prometheus:
     image: prom/prometheus
     deploy:
