@@ -65,6 +65,7 @@ services:
     volumes:
       - elastic_data:/usr/share/elasticsearch/data
       - elastic_config:/usr/share/elasticsearch/config
+    command: "elasticsearch -Des.cluster.name='graylog'"
 
   graylog:
     image: graylog2/server
