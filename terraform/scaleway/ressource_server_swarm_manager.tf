@@ -3,6 +3,8 @@ resource "scaleway_server" "swarm_manager" {
   image = "${data.scaleway_image.docker.id}"
   type  = "${var.scw_type_manager}"
   dynamic_ip_required = true
+  security_group = "${scaleway_security_group.swarm_externe.id}"
+
 
   volume {
     size_in_gb = 50

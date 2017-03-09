@@ -4,6 +4,8 @@ resource "scaleway_server" "swarm_node" {
   type  = "${var.scw_type_node}"
   count = "${var.swarm_nodes}"
   dynamic_ip_required = true
+  security_group = "${scaleway_security_group.swarm.id}"
+
 
   volume {
     size_in_gb = 50

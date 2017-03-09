@@ -4,6 +4,7 @@ resource "scaleway_server" "swarm_glusterfs" {
   type  = "${var.scw_type_glusterfs}"
   count = "${var.swarm_glusterfs}"
   dynamic_ip_required = true
+  security_group = "${scaleway_security_group.swarm.id}"
 
   volume {
     size_in_gb = 50

@@ -10,9 +10,13 @@
 
   tasks:
 
+    - name: Define tmp var swarm_master_ip
+      set_fact:
+        swarm_master_ip="{% for host in groups['swarm_master'] %}{{ hostvars[host]['ansible_eth0']['ipv4']['address'] }}{% endfor %}"
+
 # Init Cluster Swarm
     - name: "[swarm_master] swarm init"
-      command: docker swarm init
+      command: docker swarm init --advertise-addr {{ swarm_master_ip }}
       when: inventory_hostname in groups['swarm_master']
 
     - name: "[swarm_master] get token"
@@ -20,13 +24,9 @@
       register: swarm_master_token_worker_tmp
       when: inventory_hostname in groups['swarm_master']
 
-    - name: Define tmp var
+    - name: Define tmp var swarm_master_token_worker
       set_fact:
-        swarm_master_ip="{% for host in groups['swarm_master'] %}{{ hostvars[host]['ansible_eth0']['ipv4']['address'] }}{% endfor %}"
         swarm_master_token_worker="{% for host in groups['swarm_master'] %}{{ hostvars[host]['swarm_master_token_worker_tmp'] }}{% endfor %}"
-
-    - debug:
-        msg: "{{ swarm_master_token_worker.stdout }}"
 
     - name: "[swarm_node] slave join master"
       command: docker swarm join --token {{ swarm_master_token_worker.stdout }} {{ swarm_master_ip }}:2377
@@ -40,7 +40,6 @@
     - name: Define glusterfs_create
       set_fact:
         glusterfs_create="{% for host in groups['swarm_glusterfs'] -%}{{ hostvars[host]['ansible_eth0']['ipv4']['address'] }}:{{ gluster_brick_dir }}{%- if not loop.last %} {% endif -%}{%- endfor %}"
-
 
     - name: Ensure Gluster brick and mount directories exist.
       file:
@@ -118,6 +117,12 @@
         mode: 0755
       when: "inventory_hostname == groups.swarm_master[0]"
 
+
+    - name: Sleep
+      command: sleep 30
+      when: "inventory_hostname == groups.swarm_master[0]"
+
+
     - name: Deploy monitoring stack
-      command: sleep 30 && docker stack deploy -c /tmp/sweady/docker-compose/monitoring/docker-compose.yml monitoring
+      command: docker stack deploy -c /tmp/sweady/docker-compose/monitoring/docker-compose.yml monitoring
       when: "inventory_hostname == groups.swarm_master[0]"
