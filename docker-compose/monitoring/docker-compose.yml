@@ -1,5 +1,39 @@
 version: '3'
 
+volumes:
+  prometheus_config:
+    driver: local-persist
+    driver_opts:
+      mountpoint: '/mnt/data/monitoring/prometheus/config'
+  prometheus_data:
+    driver: local-persist
+    driver_opts:
+      mountpoint: '/mnt/data/monitoring/prometheus/data'
+  grafana_data:
+    driver: local-persist
+    driver_opts:
+      mountpoint: '/mnt/data/monitoring/grafana/data'
+  mongo_data:
+    driver: local-persist
+    driver_opts:
+        mountpoint: '/mnt/data/monitoring/mongo/data'
+  elastic_data:
+    driver: local-persist
+    driver_opts:
+      mountpoint: '/mnt/data/monitoring/elastic/data'
+  elastic_config:
+    driver: local-persist
+    driver_opts:
+      mountpoint: '/mnt/data/monitoring/elastic/config'
+  graylog_data:
+    driver: local-persist
+    driver_opts:
+      mountpoint: '/mnt/data/monitoring/graylog/data'
+  graylog_config:
+    driver: local-persist
+    driver_opts:
+      mountpoint: '/mnt/data/monitoring/graylog/config'
+
 networks:
   monitoring:
     driver: overlay
@@ -7,11 +41,19 @@ networks:
 services:
   mongo:
     image: mongo:3
+    deploy:
+      placement:
+        constraints:
+          - node.role!== manager
     volumes:
       - mongo_data:/data/db
 
   elasticsearch:
     image: elasticsearch:2-alpine
+    deploy:
+      placement:
+        constraints:
+          - node.role!== manager
     volumes:
       - elastic_data:/usr/share/elasticsearch/data
       - elastic_config:/usr/share/elasticsearch/config
@@ -92,37 +134,3 @@ services:
       - GF_AUTH_BASIC_ENABLED=false
       - GF_AUTH_ANONYMOUS_ENABLED=true
       - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
-
-volumes:
-  prometheus_config:
-    driver: local-persist
-    driver_opts:
-      mountpoint: '/mnt/data/monitoring/prometheus/config'
-  prometheus_data:
-    driver: local-persist
-    driver_opts:
-      mountpoint: '/mnt/data/monitoring/prometheus/data'
-  grafana_data:
-    driver: local-persist
-    driver_opts:
-      mountpoint: '/mnt/data/monitoring/grafana/data'
-  mongo_data:
-    driver: local-persist
-    driver_opts:
-        mountpoint: '/mnt/data/monitoring/mongo/data'
-  elastic_data:
-    driver: local-persist
-    driver_opts:
-      mountpoint: '/mnt/data/monitoring/elastic/data'
-  elastic_config:
-    driver: local-persist
-    driver_opts:
-      mountpoint: '/mnt/data/monitoring/elastic/config'
-  graylog_data:
-    driver: local-persist
-    driver_opts:
-      mountpoint: '/mnt/data/monitoring/graylog/data'
-  graylog_config:
-    driver: local-persist
-    driver_opts:
-      mountpoint: '/mnt/data/monitoring/graylog/config'
