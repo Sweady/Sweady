@@ -25,6 +25,6 @@ if [ "$1" == "scaleway" ] || [ "$1" == "aws" ]; then
         ansible-playbook ./../../ansible/init.ansible.yaml -i ../../tmp/inventory_ansible_swarm
     fi
     if [ "$1" == "aws" ]; then
-        ansible-playbook ./../../ansible/init.ansible.yaml -i ../../tmp/inventory_ansible_swarm -a "user=ubuntu"
+        ansible-playbook ./../../ansible/init.ansible.yaml -i ../../tmp/inventory_ansible_swarm --user=ubuntu
     fi
 fi
