@@ -32,7 +32,7 @@ variable "scw_ssh_key" {
 }
 
 variable "swarm_nodes" {
-  default     = 3
+  default     = 1
   description = "Number of nodes in the cluster"
 }
 
@@ -42,6 +42,6 @@ variable "scw_type_glusterfs" {
 }
 
 variable "swarm_glusterfs" {
-  default     = 3
+  default     = 4
   description = "Number of glusterfs"
 }
