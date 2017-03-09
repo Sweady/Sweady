@@ -2,37 +2,43 @@ version: '3'
 
 volumes:
   prometheus_config:
-    driver: local-persist
     driver_opts:
-      mountpoint: '/mnt/data/monitoring/prometheus/config'
+      device: '/mnt/data/monitoring/prometheus/config'
+      type: none
+      o: bind
   prometheus_data:
-    driver: local-persist
     driver_opts:
-      mountpoint: '/mnt/data/monitoring/prometheus/data'
+      device: '/mnt/data/monitoring/prometheus/data'
+      type: none
+      o: bind
   grafana_data:
-    driver: local-persist
     driver_opts:
-      mountpoint: '/mnt/data/monitoring/grafana/data'
+      device: '/mnt/data/monitoring/grafana/data'
   mongo_data:
-    driver: local-persist
     driver_opts:
-        mountpoint: '/mnt/data/monitoring/mongo/data'
+        device: '/mnt/data/monitoring/mongo/data'
+        type: none
+        o: bind
   elastic_data:
-    driver: local-persist
     driver_opts:
-      mountpoint: '/mnt/data/monitoring/elastic/data'
+      device: '/mnt/data/monitoring/elastic/data'
+      type: none
+      o: bind
   elastic_config:
-    driver: local-persist
     driver_opts:
-      mountpoint: '/mnt/data/monitoring/elastic/config'
+      device: '/mnt/data/monitoring/elastic/config'
+      type: none
+      o: bind
   graylog_data:
-    driver: local-persist
     driver_opts:
-      mountpoint: '/mnt/data/monitoring/graylog/data'
+      device: '/mnt/data/monitoring/graylog/data'
+      type: none
+      o: bind
   graylog_config:
-    driver: local-persist
     driver_opts:
-      mountpoint: '/mnt/data/monitoring/graylog/config'
+      device: '/mnt/data/monitoring/graylog/config'
+      type: none
+      o: bind
 
 networks:
   monitoring:
