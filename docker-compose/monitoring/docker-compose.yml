@@ -2,45 +2,13 @@ version: '3'
 
 volumes:
   prometheus_config:
-    driver_opts:
-      device: '/mnt/data/monitoring/prometheus/config'
-      type: none
-      o: bind
   prometheus_data:
-    driver_opts:
-      device: '/mnt/data/monitoring/prometheus/data'
-      type: none
-      o: bind
   grafana_data:
-    driver_opts:
-      device: '/mnt/data/monitoring/grafana/data'
-      type: none
-      o: bind
   mongo_data:
-    driver_opts:
-      device: '/mnt/data/monitoring/mongo/data'
-      type: none
-      o: bind
   elastic_data:
-    driver_opts:
-      device: '/mnt/data/monitoring/elastic/data'
-      type: none
-      o: bind
   elastic_config:
-    driver_opts:
-      device: '/mnt/data/monitoring/elastic/config'
-      type: none
-      o: bind
   graylog_data:
-    driver_opts:
-      device: '/mnt/data/monitoring/graylog/data'
-      type: none
-      o: bind
   graylog_config:
-    driver_opts:
-      device: '/mnt/data/monitoring/graylog/config'
-      type: none
-      o: bind
 
 networks:
   monitoring:
@@ -88,8 +56,6 @@ services:
       - "12201:12201/udp"
       - "1514:1514/udp"
 
-
-
   prometheus:
     image: prom/prometheus
     deploy:
@@ -107,6 +73,8 @@ services:
       - cadvisor
     networks:
       - monitoring
+    ports:
+      -  "9091:9091"
 
   grafana:
     image: grafana/grafana

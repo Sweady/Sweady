@@ -4,7 +4,7 @@
   become: true
   vars:
     glusterfs_ppa_use: false
-    gluster_mount_dir: /mnt/data
+    gluster_mount_dir: /var/lib/docker/volumes
     gluster_brick_dir: /data
     gluster_brick_name: gluster
 
@@ -111,7 +111,7 @@
     - name: Config for Prometheus
       copy:
         src: ../docker-compose/monitoring/prometheus/prometheus.yml
-        dest: /mnt/data/monitoring/prometheus/config/prometheus.yml
+        dest: /var/lib/docker/volumes/monitoring_prometheus_config/_data/prometheus.yml
         owner: root
         group: root
         mode: 0755
