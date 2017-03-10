@@ -52,7 +52,7 @@ services:
     deploy:
       placement:
         constraints:
-          - node.role !== manager
+          - node.role == worker
     volumes:
       - mongo_data:/data/db
 
@@ -61,7 +61,7 @@ services:
     deploy:
       placement:
         constraints:
-          - node.role !== manager
+          - node.role == worker
     volumes:
       - elastic_data:/usr/share/elasticsearch/data
       - elastic_config:/usr/share/elasticsearch/config
@@ -69,6 +69,10 @@ services:
 
   graylog:
     image: graylog2/server
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
     volumes:
       - graylog_data:/usr/share/graylog/data/journal
       - graylog_config:/usr/share/graylog/data/config
@@ -104,25 +108,6 @@ services:
     networks:
       - monitoring
 
-  node-exporter:
-    image: prom/node-exporter
-    deploy:
-      mode: global
-    networks:
-      - monitoring
-
-  cadvisor:
-    image: google/cadvisor
-    deploy:
-      mode: global
-    volumes:
-      - /:/rootfs:ro
-      - /var/run:/var/run:rw
-      - /sys:/sys:ro
-      - /var/lib/docker/:/var/lib/docker:ro
-    networks:
-      - monitoring
-
   grafana:
     image: grafana/grafana
     deploy:
@@ -141,3 +126,22 @@ services:
       - GF_AUTH_BASIC_ENABLED=false
       - GF_AUTH_ANONYMOUS_ENABLED=true
       - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+
+  node-exporter:
+    image: prom/node-exporter
+    deploy:
+      mode: global
+    networks:
+      - monitoring
+
+  cadvisor:
+    image: google/cadvisor
+    deploy:
+      mode: global
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    networks:
+      - monitoring
