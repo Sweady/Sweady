@@ -126,3 +126,11 @@
     - name: Deploy monitoring stack
       command: docker stack deploy -c /tmp/sweady/docker-compose/monitoring/docker-compose.yml monitoring
       when: "inventory_hostname == groups.swarm_master[0]"
+
+    - name: Sleep
+      command: sleep 30
+      when: "inventory_hostname == groups.swarm_master[0]"
+
+    - name: Deploy Grafana Datasource
+      command: curl -X POST http://127.0.0.1:3000/api/datasources --header "Content-Type: application/json" --data-binary "@/tmp/sweady/docker-compose/monitoring/grafana/datasource/prometheus.json"
+      when: "inventory_hostname == groups.swarm_master[0]"
