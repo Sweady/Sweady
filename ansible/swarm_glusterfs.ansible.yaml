@@ -1,7 +1,7 @@
 ---
 - hosts: all
-  user: root
   become: true
+  become_user: root
   vars:
     glusterfs_ppa_use: false
     disk_additional_disks:
@@ -12,7 +12,16 @@
 
   pre_tasks:
     - name: Clear file
-      command: rm -rf /etc/apt/apt.conf.d/50unattended-upgrades*
+      command: rm -rf /etc/apt/apt.conf.d/50unattended*
+
+    - name: Kill apt-daily
+      command: systemctl kill --kill-who=all apt-daily.service
+
+    - name: Stop apt auto update (timer)
+      systemd: name=apt-daily.timer state=stopped enabled=no
+
+    - name: Stop apt auto update (service)
+      systemd: name=apt-daily.service state=stopped enabled=no
 
   roles:
     - GoContainer.system-update

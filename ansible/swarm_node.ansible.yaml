@@ -1,15 +1,46 @@
 ---
 - hosts: all
-  user: root
   become: true
+  become_user: root
   vars:
     gluster_mount_dir: /mnt/data
     gluster_brick_name: gluster
 
   pre_tasks:
     - name: Clear file
-      command: rm -rf /etc/apt/apt.conf.d/50unattended-upgrades*
+      command: rm -rf /etc/apt/apt.conf.d/50unattended*
+
+    - name: Kill apt-daily
+      command: systemctl kill --kill-who=all apt-daily.service
+      ignore_errors: yes
+
+    - name: Stop apt auto update (timer)
+      systemd: name=apt-daily.timer state=stopped enabled=no
+
+    - name: Stop apt auto update (service)
+      systemd: name=apt-daily.service state=stopped enabled=no
 
   roles:
     - GoContainer.system-update
     - GoContainer.docker-local-persist
+
+  tasks:
+    - name: Add key for Docker
+      apt_key:
+        url: "https://download.docker.com/linux/ubuntu/gpg"
+        state: present
+
+    - name: Add repo for Docker
+      apt_repository:
+        repo: "deb https://download.docker.com/linux/ubuntu xenial stable"
+        state: present
+        filename: "docker"
+
+    - name: Install Docker
+      apt:
+        name: docker-ce
+        state: present
+        update_cache: yes
+
+    - name: Active Docker Boot
+      systemd: name=docker enabled=yes

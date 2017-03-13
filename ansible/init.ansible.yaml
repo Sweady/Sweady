@@ -1,7 +1,7 @@
 ---
 - hosts: all
-  user: root
   become: true
+  become_user: root
   vars:
     glusterfs_ppa_use: false
     gluster_mount_dir: /var/lib/docker/volumes
@@ -12,7 +12,7 @@
 
     - name: Define tmp var swarm_master_ip
       set_fact:
-        swarm_master_ip="{% for host in groups['swarm_master'] %}{{ hostvars[host]['ansible_eth0']['ipv4']['address'] }}{% endfor %}"
+        swarm_master_ip="{% for host in groups['swarm_master'] %}{{ hostvars[host]['ansible_default_ipv4']['address'] }}{% endfor %}"
 
 # Init Cluster Swarm
     - name: "[swarm_master] swarm init"
@@ -35,11 +35,11 @@
 # Init Cluster GlusterFS
     - name: Define TPM private ip
       set_fact:
-        gluster_servers_ips_tmp="{% for host in groups['swarm_glusterfs'] %}{{ hostvars[host]['ansible_eth0']['ipv4']['address'] }}|{% endfor %}"
+        gluster_servers_ips_tmp="{% for host in groups['swarm_glusterfs'] %}{{ hostvars[host]['ansible_default_ipv4']['address'] }}|{% endfor %}"
 
     - name: Define glusterfs_create
       set_fact:
-        glusterfs_create="{% for host in groups['swarm_glusterfs'] -%}{{ hostvars[host]['ansible_eth0']['ipv4']['address'] }}:{{ gluster_brick_dir }}{%- if not loop.last %} {% endif -%}{%- endfor %}"
+        glusterfs_create="{% for host in groups['swarm_glusterfs'] -%}{{ hostvars[host]['ansible_default_ipv4']['address'] }}:{{ gluster_brick_dir }}{%- if not loop.last %} {% endif -%}{%- endfor %}"
 
     - name: Ensure Gluster brick and mount directories exist.
       file:
@@ -105,7 +105,7 @@
       when: "inventory_hostname == groups.swarm_master[0]"
 
     - name: Ensures data dir exists
-      file: path=/mnt/data/monitoring/prometheus/config state=directory
+      file: path=/var/lib/docker/volumes/monitoring_prometheus_config/_data/ state=directory
       when: "inventory_hostname == groups.swarm_master[0]"
 
     - name: Config for Prometheus

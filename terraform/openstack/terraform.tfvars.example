@@ -1,0 +1,9 @@
+scw_region          = "par1"
+scw_type_manager    = "VC1M"
+scw_type_node       = "VC1M"
+scw_type_glusterfs  = "VC1M"
+scw_machine_user    = "root"
+scw_ssh_key         = "~/.ssh/id_rsa"
+swarm_nodes         = 1
+swarm_glusterfs     = 4
+

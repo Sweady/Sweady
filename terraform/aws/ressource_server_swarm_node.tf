@@ -7,7 +7,7 @@ resource "aws_instance" "swarm_node" {
   security_groups = ["${aws_security_group.swarm.name}"]
 
   provisioner "local-exec" {
-    command = "sleep 30 && ansible-playbook -i '${self.public_ip},' --private-key ${var.aws_ssh_key} '../../ansible/swarm_node.ansible.yaml' -T 300"
+    command = "sleep 30 && ansible-playbook -i '${self.public_ip},' --private-key ${var.aws_ssh_key} '../../ansible/swarm_node.ansible.yaml' -T 300 --user=ubuntu"
   }
 
   tags {
