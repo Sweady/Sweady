@@ -1,13 +1,17 @@
 .DEFAULT_GOAL := help
 
-create: 	terraform-apply				## Create infrastructure, provider=aws or scaleway
-destroy: 	terraform-destroy			## Destroy infrastructure, provider=aws or scaleway
+create: 	terraform-apply				## Create infrastructure, provider=aws or scaleway or openstack
+destroy: 	terraform-destroy			## Destroy infrastructure, provider=aws or scaleway or openstack
+update: 	terraform-update			## Update infrastructure, provider=aws or scaleway or openstack
 
 terraform-apply:
 	./bin/create.sh ${provider}
 
 terraform-destroy:
 	./bin/destroy.sh ${provider}
+
+terraform-update:
+	./bin/update.sh ${provider}
 
 
 help:

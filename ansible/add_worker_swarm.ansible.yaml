@@ -1,0 +1,56 @@
+---
+- hosts: all
+  become: true
+  become_user: root
+  vars:
+    glusterfs_ppa_use: false
+    gluster_mount_dir: /var/lib/docker/volumes
+    gluster_brick_dir: /data
+    gluster_brick_name: gluster
+
+  tasks:
+
+    - name: Define tmp var swarm_master_ip
+      set_fact:
+        swarm_master_ip="{% for host in groups['swarm_master'] %}{{ hostvars[host]['ansible_default_ipv4']['address'] }}{% endfor %}"
+
+# Init Cluster Swarm
+
+    - name: "[swarm_master] get token"
+      command: docker swarm join-token -q worker
+      register: swarm_master_token_worker_tmp
+      when: inventory_hostname in groups['swarm_master']
+
+    - name: Define tmp var swarm_master_token_worker
+      set_fact:
+        swarm_master_token_worker="{% for host in groups['swarm_master'] %}{{ hostvars[host]['swarm_master_token_worker_tmp'] }}{% endfor %}"
+
+    - name: "[swarm_node] slave join master"
+      command: docker swarm join --token {{ swarm_master_token_worker.stdout }} {{ swarm_master_ip }}:2377
+      when: inventory_hostname in groups['swarm_node']
+
+# Init Cluster GlusterFS
+    - name: Define TPM private ip
+      set_fact:
+        gluster_servers_ips_tmp="{% for host in groups['swarm_glusterfs'] %}{{ hostvars[host]['ansible_default_ipv4']['address'] }}|{% endfor %}"
+
+    - name: Define glusterfs_create
+      set_fact:
+        glusterfs_create="{% for host in groups['swarm_glusterfs'] -%}{{ hostvars[host]['ansible_default_ipv4']['address'] }}:{{ gluster_brick_dir }}{%- if not loop.last %} {% endif -%}{%- endfor %}"
+
+    - name: Ensure GlusterFS is installed.
+      apt:
+        name: "{{ item }}"
+        state: latest
+      with_items:
+        - glusterfs-client
+      when: "inventory_hostname == groups.swarm_master[0] or inventory_hostname == groups.swarm_node"
+
+    - name: Ensure the Gluster volume is mounted.
+      mount:
+        name: "{{ gluster_mount_dir }}"
+        src: "{{ groups.swarm_glusterfs[0] }}:/{{ gluster_brick_name }}"
+        fstype: glusterfs
+        opts: "defaults,_netdev"
+        state: mounted
+      when: "inventory_hostname == groups.swarm_master[0] or inventory_hostname == groups.swarm_node"
