@@ -4,9 +4,9 @@ resource "openstack_compute_floatingip_v2" "glusterfs_fip" {
   region = "fr1"
 }
 
-resource "openstack_blockstorage_volume_v2" "vdb" {
+resource "openstack_blockstorage_volume_v2" "gluster_vdb" {
   count  = "${var.swarm_glusterfs}"
-  name = "vdb-${count.index + 1}"
+  name = "gluster_vdb-${count.index + 1}"
   size = 50
   region = "fr1"
 }
@@ -26,7 +26,7 @@ resource "openstack_compute_instance_v2" "glusterfs_instances" {
   }
 
   volume {
-    volume_id = "${element(openstack_blockstorage_volume_v2.vdb.*.id, count.index)}"
+    volume_id = "${element(openstack_blockstorage_volume_v2.gluster_vdb.*.id, count.index)}"
   }
 
   provisioner "local-exec" {
