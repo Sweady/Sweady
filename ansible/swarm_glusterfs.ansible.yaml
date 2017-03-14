@@ -16,6 +16,7 @@
 
     - name: Kill apt-daily
       command: systemctl kill --kill-who=all apt-daily.service
+      ignore_errors: yes
 
     - name: Stop apt auto update (timer)
       systemd: name=apt-daily.timer state=stopped enabled=no

@@ -1,6 +1,6 @@
 resource "aws_instance" "swarm_glusterfs" {
   instance_type = "${var.aws_type_glusterfs}"
-  ami = "${data.aws_ami.ubuntu.id}"
+  ami = "${var.aws_ami}"
   count = "${var.swarm_glusterfs}"
   associate_public_ip_address = true
   key_name = "${var.aws_key_name}"

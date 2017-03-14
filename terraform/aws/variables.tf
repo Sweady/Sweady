@@ -50,3 +50,8 @@ variable "swarm_glusterfs" {
   default     = 4
   description = "Number of glusterfs in the cluster"
 }
+
+variable "aws_ami" {
+  default = "ami-80c2f6e6"
+  description = "Use AMI for VM"
+}

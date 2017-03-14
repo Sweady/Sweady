@@ -9,3 +9,4 @@ aws_ssh_key         = "~/.ssh/id_rsa"
 aws_key_name        = "Home"
 swarm_nodes         = 1
 swarm_glusterfs     = 4
+aws_ami             = "ami-80c2f6e6"
