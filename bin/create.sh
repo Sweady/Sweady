@@ -25,7 +25,7 @@ if [ "$1" == "scaleway" ] || [ "$1" == "aws" ] || [ "$1" == "openstack" ]; then
         ansible-playbook ./../../ansible/init.ansible.yaml -i ../../tmp/inventory_ansible_swarm --user=root
     fi
     if [ "$1" == "aws" ]; then
-        ansible-playbook ./../../ansible/init.ansible.yaml -i ../../tmp/inventory_ansible_swarm --user=ubuntu
+        ansible-playbook ./../../ansible/init.ansible.yaml -i ../../tmp/inventory_ansible_swarm --private-key ~/.ssh/aws.pem --user=ubuntu
     fi
     if [ "$1" == "openstack" ]; then
         ansible-playbook ./../../ansible/init.ansible.yaml -i ../../tmp/inventory_ansible_swarm --user=cloud

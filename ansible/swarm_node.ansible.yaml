@@ -20,6 +20,9 @@
     - name: Stop apt auto update (service)
       systemd: name=apt-daily.service state=stopped enabled=no
 
+    - name: Clean DPKG
+      command: dpkg --configure -a
+
   roles:
     - GoContainer.system-update
     - GoContainer.docker-local-persist

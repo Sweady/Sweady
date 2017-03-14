@@ -5,7 +5,7 @@
   vars:
     glusterfs_ppa_use: false
     disk_additional_disks:
-      - disk: /dev/vdb
+      - disk: /dev/{{ disk }}
         fstype: ext4
         mount_options: defaults
         mount: /data
@@ -23,6 +23,9 @@
 
     - name: Stop apt auto update (service)
       systemd: name=apt-daily.service state=stopped enabled=no
+
+    - name: Clean DPKG
+      command: dpkg --configure -a
 
   roles:
     - GoContainer.system-update
