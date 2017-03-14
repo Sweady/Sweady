@@ -4,58 +4,12 @@ volumes:
   prometheus_config:
   prometheus_data:
   grafana_data:
-  mongo_data:
-  elastic_data:
-  elastic_config:
-  graylog_data:
-  graylog_config:
 
 networks:
   monitoring:
     driver: overlay
 
 services:
-  mongo:
-    image: mongo:3
-    deploy:
-      placement:
-        constraints:
-          - node.role == worker
-    volumes:
-      - mongo_data:/data/db
-
-  elasticsearch:
-    image: elasticsearch:2-alpine
-    deploy:
-      placement:
-        constraints:
-          - node.role == worker
-    volumes:
-      - elastic_data:/usr/share/elasticsearch/data
-      - elastic_config:/usr/share/elasticsearch/config
-    command: "elasticsearch -Des.cluster.name='graylog'"
-
-  graylog:
-    image: graylog2/server
-    deploy:
-      placement:
-        constraints:
-          - node.role == manager
-    volumes:
-      - graylog_data:/usr/share/graylog/data/journal
-      - graylog_config:/usr/share/graylog/data/config
-    environment:
-      - GRAYLOG_PASSWORD_SECRET=cH5mQ7ANxhh4555T
-      - GRAYLOG_ROOT_PASSWORD_SHA2=031da2e44853d568de256e09e77388ce0e4474a79e7abf3303222aeaec8b7f21
-      - GRAYLOG_WEB_ENDPOINT_URI=http://127.0.0.1:9000/api
-    depends_on:
-      - mongo
-      - elasticsearch
-    ports:
-      - "9000:9000"
-      - "12201:12201/udp"
-      - "1514:1514/udp"
-
   prometheus:
     image: prom/prometheus
     deploy:
