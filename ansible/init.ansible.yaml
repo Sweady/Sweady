@@ -123,7 +123,7 @@
 
     - name: Config for Logstash
       copy:
-        src: ../docker-compose/log/conf/gelf.yml
+        src: ../docker-compose/log/conf/gelf.conf
         dest: /var/lib/docker/volumes/log_logstash_config/_data/gelf.yml
         owner: root
         group: root
