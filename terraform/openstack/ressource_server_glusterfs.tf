@@ -30,6 +30,6 @@ resource "openstack_compute_instance_v2" "glusterfs_instances" {
   }
 
   provisioner "local-exec" {
-    command = "sleep 30 && ansible-playbook -i '${self.access_ip_v4},' --private-key ${var.scw_ssh_key}  '../../ansible/swarm_glusterfs.ansible.yaml' -T 300 --user=cloud"
+    command = "sleep 30 && ansible-playbook -i '${self.access_ip_v4},' --private-key ${var.scw_ssh_key}  '../../ansible/swarm_glusterfs.ansible.yaml' -e 'disk=vdb' -T 300 --user=cloud"
   }
 }

@@ -13,6 +13,6 @@ resource "scaleway_server" "swarm_node" {
   }
 
   provisioner "local-exec" {
-    command = "sleep 30 && ansible-playbook -i '${self.public_ip},' --private-key ${var.scw_ssh_key} '../../ansible/swarm_node.ansible.yaml' -T 300 --user=root"
+    command = "sleep 30 && ansible-playbook -i '${self.public_ip},' --private-key ${var.scw_ssh_key} '../../ansible/swarm_node.ansible.yaml' -e 'disk=vdb' -T 300 --user=root"
   }
 }

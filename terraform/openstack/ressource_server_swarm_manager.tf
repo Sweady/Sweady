@@ -19,6 +19,6 @@ resource "openstack_compute_instance_v2" "manager_instances" {
   }
 
   provisioner "local-exec" {
-    command = "sleep 30 && ansible-playbook -i '${openstack_compute_floatingip_v2.manager_fip.address},' --private-key ${var.scw_ssh_key}  '../../ansible/swarm_manager.ansible.yaml' -T 300 --user=cloud"
+    command = "sleep 30 && ansible-playbook -i '${openstack_compute_floatingip_v2.manager_fip.address},' --private-key ${var.scw_ssh_key}  '../../ansible/swarm_manager.ansible.yaml' -e 'disk=vdb' -T 300 --user=cloud"
   }
 }
