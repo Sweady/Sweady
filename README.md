@@ -41,3 +41,25 @@ make update provider=aws
 ```BASH
 make update provider=openstack
 ```
+
+# Destroy
+Si vous souhaitez supprimer l'ensemble de votre cluster Sweady, il faut utiliser la commande ```make destroy```.
+/!\ Attention, cela supprime l'ensemble des données ! Il faut réaliser vos sauvegarde si nécessaire avant /!\
+
+## Destroy Sweady for Scaleway
+
+```BASH
+make destroy provider=scaleway
+```
+
+## Destroy Sweady for AWS
+
+```BASH
+make destroy provider=aws
+```
+
+## Destroy Sweady for OpenStack
+
+```BASH
+make destroy provider=openstack
+```
