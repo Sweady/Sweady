@@ -10,20 +10,18 @@ networks:
 
 services:
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch
+    image: docker.elastic.co/elasticsearch/elasticsearch:5.2.1
     deploy:
       placement:
         constraints:
           - node.role == worker
     volumes:
       - elasticsearch_data:/usr/share/elasticsearch/data
-    ports:
-      - "9200:9200"
     networks:
       - log
 
   logstash:
-    image: docker.elastic.co/logstash/logstash
+    image: docker.elastic.co/logstash/logstash:5.2.1
     deploy:
       placement:
         constraints:
@@ -40,9 +38,11 @@ services:
     command: logstash -f /conf/gelf.conf
     networks:
       - log
+    depends_on:
+      - elasticsearch
 
   kibana:
-    image: docker.elastic.co/kibana/kibana
+    image: docker.elastic.co/kibana/kibana:5.2.1
     deploy:
       placement:
         constraints:
@@ -51,3 +51,5 @@ services:
       - "5601:5601"
     networks:
       - log
+    depends_on:
+      - elasticsearch
