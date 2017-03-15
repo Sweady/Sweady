@@ -1,0 +1,35 @@
+version: '3'
+
+networks:
+  sweady:
+    driver: overlay
+
+services:
+  logrotate:
+    image: sweady/logrotate
+    deploy:
+      mode: global
+    volumes:
+      - /var/lib/docker/containers:/var/lib/docker/containers
+    networks:
+      - sweady
+
+  ntpd:
+    image: sweady/ntpd
+    privileged: true
+    deploy:
+      mode: global
+    networks:
+      - sweady
+
+  cleanup:
+    image: tutum/cleanup
+    deploy:
+      mode: global
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - sweady
+    environment:
+      - IMAGE_CLEAN_INTERVAL=1
+      - IMAGE_CLEAN_DELAYED=1800
