@@ -117,6 +117,18 @@
         mode: 0755
       when: "inventory_hostname == groups.swarm_master[0]"
 
+    - name: Data for Logstash
+      file: path=/var/lib/docker/volumes/log_logstash_config/_data/  state=directory
+      when: "inventory_hostname == groups.swarm_master[0]"
+
+    - name: Config for Logstash
+      copy:
+        src: ../docker-compose/log/conf/gelf.yml
+        dest: /var/lib/docker/volumes/log_logstash_config/_data/gelf.yml
+        owner: root
+        group: root
+        mode: 0755
+      when: "inventory_hostname == groups.swarm_master[0]"
 
     - name: Sleep
       command: sleep 30
@@ -124,6 +136,10 @@
 
     - name: Deploy Sweady stack
       command: docker stack deploy -c /tmp/sweady/docker-compose/sweady/docker-compose.yml sweady
+      when: "inventory_hostname == groups.swarm_master[0]"
+
+    - name: Deploy logging stack
+      command: docker stack deploy -c /tmp/sweady/docker-compose/log/docker-compose.yml log
       when: "inventory_hostname == groups.swarm_master[0]"
 
     - name: Deploy monitoring stack
