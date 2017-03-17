@@ -1,0 +1,47 @@
+---
+  - name: Define TPM private ip
+    set_fact:
+      gluster_servers_ips_tmp="{% for host in groups['swarm_glusterfs'] %}{{ hostvars[host]['ansible_default_ipv4']['address'] }}|{% endfor %}"
+
+  - name: Define glusterfs_create
+    set_fact:
+      glusterfs_create="{% for host in groups['swarm_glusterfs'] -%}{{ hostvars[host]['ansible_default_ipv4']['address'] }}:{{ gluster_brick_dir }}{%- if not loop.last %} {% endif -%}{%- endfor %}"
+
+  - name: Ensure Gluster brick and mount directories exist.
+    file:
+      path: "{{ item }}"
+      state: directory
+      owner: root
+      group: root
+      mode: 0775
+    with_items:
+      - "{{ gluster_brick_dir }}"
+      - "{{ gluster_mount_dir }}"
+    when: "inventory_hostname in groups['swarm_glusterfs']"
+
+  # Gluster volume configuration.
+  - name: Check if Gluster volumes already exist.
+    shell: "gluster volume info"
+    changed_when: false
+    register: gluster_volume_info
+    when: "inventory_hostname in groups['swarm_glusterfs']"
+
+  - name: Connect to Gluster peers.
+    shell: "gluster peer probe {{ item }}"
+    register: gluster_peer_probe
+    changed_when: "'already in peer list' not in gluster_peer_probe.stdout"
+    failed_when: false
+    with_items: "{{ gluster_servers_ips_tmp[:-1].split('|') }}"
+    when: "inventory_hostname == groups.swarm_glusterfs[0] and 'Volume Name: gluster' not in gluster_volume_info.stdout"
+
+  - name: Create Gluster volume.
+    shell: "gluster volume create {{ gluster_brick_name }} replica 2 transport tcp {{ glusterfs_create }} force"
+    register: gluster_volume_create
+    changed_when: "'successful' in gluster_volume_create.stdout"
+    when: "inventory_hostname == groups.swarm_glusterfs[0] and 'Volume Name: gluster' not in gluster_volume_info.stdout"
+
+  - name: Ensure Gluster volume is started.
+    shell: "gluster volume start {{ gluster_brick_name }}"
+    register: gluster_volume_start
+    changed_when: "'successful' in gluster_volume_start.stdout"
+    when: "inventory_hostname == groups.swarm_glusterfs[0] and 'Volume Name: gluster' not in gluster_volume_info.stdout"

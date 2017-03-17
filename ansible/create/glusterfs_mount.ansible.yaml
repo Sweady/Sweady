@@ -1,0 +1,17 @@
+---
+    - name: Ensure GlusterFS is installed.
+      apt:
+        name: "{{ item }}"
+        state: latest
+      with_items:
+        - glusterfs-client
+      when: "inventory_hostname == groups.swarm_master or inventory_hostname == groups.swarm_node"
+
+    - name: Ensure the Gluster volume is mounted.
+      mount:
+        name: "{{ gluster_mount_dir }}"
+        src: "{{ groups.swarm_glusterfs[0] }}:/{{ gluster_brick_name }}"
+        fstype: glusterfs
+        opts: "defaults,_netdev"
+        state: mounted
+      when: "inventory_hostname == groups.swarm_master or inventory_hostname == groups.swarm_node"

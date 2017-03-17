@@ -1,4 +1,48 @@
 ---
+# Deps for ansible
+- hosts: localhost
+  tasks:
+    - name: "run ansible galaxy"
+      local_action: command ansible-galaxy install -r ../requirements.yml
+
+# Init & full update
+- hosts: all
+  become: true
+  become_user: root
+  pre_tasks:
+    - include: base/pre_tasks.yaml
+  roles:
+    - GoContainer.system-update
+
+# Base
+- hosts: swarm_glusterfs
+  become: true
+  become_user: root
+  vars:
+    glusterfs_ppa_use: false
+    disk_additional_disks:
+      - disk: /dev/{{ disk }}
+        fstype: ext4
+        mount_options: defaults
+        mount: /data
+    gluster_mount_dir: /var/lib/docker/volumes
+    gluster_brick_dir: /data
+    gluster_brick_name: gluster
+  roles:
+    - AerisCloud.disk
+    - GoContainer.glusterfs
+  tasks:
+    - include: base/glusterfs.ansible.yaml
+
+- hosts: swarm_master:swarm_node
+  become: true
+  become_user: root
+  roles:
+    - GoContainer.docker-local-persist
+  tasks:
+    - include: base/install_docker.yaml
+
+# Create
 - hosts: all
   become: true
   become_user: root
@@ -9,164 +53,6 @@
     gluster_brick_name: gluster
 
   tasks:
-
-    - name: Define tmp var swarm_master_ip
-      set_fact:
-        swarm_master_ip="{% for host in groups['swarm_master'] %}{{ hostvars[host]['ansible_default_ipv4']['address'] }}{% endfor %}"
-
-# Init Cluster Swarm
-    - name: "[swarm_master] swarm init"
-      command: docker swarm init --advertise-addr {{ swarm_master_ip }}
-      when: inventory_hostname in groups['swarm_master']
-
-    - name: "[swarm_master] get token"
-      command: docker swarm join-token -q worker
-      register: swarm_master_token_worker_tmp
-      when: inventory_hostname in groups['swarm_master']
-
-    - name: Define tmp var swarm_master_token_worker
-      set_fact:
-        swarm_master_token_worker="{% for host in groups['swarm_master'] %}{{ hostvars[host]['swarm_master_token_worker_tmp'] }}{% endfor %}"
-
-    - name: "[swarm_node] slave join master"
-      command: docker swarm join --token {{ swarm_master_token_worker.stdout }} {{ swarm_master_ip }}:2377
-      when: inventory_hostname in groups['swarm_node']
-
-# Init Cluster GlusterFS
-    - name: Define TPM private ip
-      set_fact:
-        gluster_servers_ips_tmp="{% for host in groups['swarm_glusterfs'] %}{{ hostvars[host]['ansible_default_ipv4']['address'] }}|{% endfor %}"
-
-    - name: Define glusterfs_create
-      set_fact:
-        glusterfs_create="{% for host in groups['swarm_glusterfs'] -%}{{ hostvars[host]['ansible_default_ipv4']['address'] }}:{{ gluster_brick_dir }}{%- if not loop.last %} {% endif -%}{%- endfor %}"
-
-    - name: Ensure Gluster brick and mount directories exist.
-      file:
-        path: "{{ item }}"
-        state: directory
-        owner: root
-        group: root
-        mode: 0775
-      with_items:
-        - "{{ gluster_brick_dir }}"
-        - "{{ gluster_mount_dir }}"
-      when: "inventory_hostname in groups['swarm_glusterfs']"
-
-    # Gluster volume configuration.
-    - name: Check if Gluster volumes already exist.
-      shell: "gluster volume info"
-      changed_when: false
-      register: gluster_volume_info
-      when: "inventory_hostname in groups['swarm_glusterfs']"
-
-    - name: Connect to Gluster peers.
-      shell: "gluster peer probe {{ item }}"
-      register: gluster_peer_probe
-      changed_when: "'already in peer list' not in gluster_peer_probe.stdout"
-      failed_when: false
-      with_items: "{{ gluster_servers_ips_tmp[:-1].split('|') }}"
-      when: "inventory_hostname == groups.swarm_glusterfs[0] and 'Volume Name: gluster' not in gluster_volume_info.stdout"
-
-    - name: Create Gluster volume.
-      shell: "gluster volume create {{ gluster_brick_name }} replica 2 transport tcp {{ glusterfs_create }} force"
-      register: gluster_volume_create
-      changed_when: "'successful' in gluster_volume_create.stdout"
-      when: "inventory_hostname == groups.swarm_glusterfs[0] and 'Volume Name: gluster' not in gluster_volume_info.stdout"
-
-    - name: Ensure Gluster volume is started.
-      shell: "gluster volume start {{ gluster_brick_name }}"
-      register: gluster_volume_start
-      changed_when: "'successful' in gluster_volume_start.stdout"
-      when: "inventory_hostname == groups.swarm_glusterfs[0] and 'Volume Name: gluster' not in gluster_volume_info.stdout"
-
-    - name: Ensure GlusterFS is installed.
-      apt:
-        name: "{{ item }}"
-        state: latest
-      with_items:
-        - glusterfs-client
-      when: "inventory_hostname == groups.swarm_master or inventory_hostname == groups.swarm_node"
-
-    - name: Ensure the Gluster volume is mounted.
-      mount:
-        name: "{{ gluster_mount_dir }}"
-        src: "{{ groups.swarm_glusterfs[0] }}:/{{ gluster_brick_name }}"
-        fstype: glusterfs
-        opts: "defaults,_netdev"
-        state: mounted
-      when: "inventory_hostname == groups.swarm_master or inventory_hostname == groups.swarm_node"
-
-# Install Sweady
-
-    - name: Fix vm.max_map_count
-      command: sysctl -w vm.max_map_count=262144
-      when: "inventory_hostname == groups.swarm_master or inventory_hostname == groups.swarm_node"
-
-    - name: Clone project
-      git:
-        repo: https://github.com/GoContainer/Sweady.git
-        dest: /tmp/sweady
-      when: "inventory_hostname == groups.swarm_master[0]"
-
-    - name: Ensures data dir exists
-      file: path=/var/lib/docker/volumes/monitoring_prometheus_config/_data/ state=directory
-      when: "inventory_hostname == groups.swarm_master[0]"
-
-    - name: Config for Prometheus
-      copy:
-        src: ../docker-compose/monitoring/prometheus/prometheus.yml
-        dest: /var/lib/docker/volumes/monitoring_prometheus_config/_data/prometheus.yml
-        owner: root
-        group: root
-        mode: 0755
-      when: "inventory_hostname == groups.swarm_master[0]"
-
-    - name: Data for Logstash
-      file: path=/var/lib/docker/volumes/log_logstash_config/_data/  state=directory
-      when: "inventory_hostname == groups.swarm_master[0]"
-
-    - name: Config for Logstash
-      copy:
-        src: ../docker-compose/log/conf/gelf.conf
-        dest: /var/lib/docker/volumes/log_logstash_config/_data/gelf.yml
-        owner: root
-        group: root
-        mode: 0755
-      when: "inventory_hostname == groups.swarm_master[0]"
-
-    - name: Sleep
-      command: sleep 30
-      when: "inventory_hostname == groups.swarm_master[0]"
-
-    - name: Deploy Sweady stack
-      command: docker stack deploy -c /tmp/sweady/docker-compose/sweady/docker-compose.yml sweady
-      when: "inventory_hostname == groups.swarm_master[0]"
-
-    - name: Deploy logging stack
-      command: docker stack deploy -c /tmp/sweady/docker-compose/log/docker-compose.yml log
-      when: "inventory_hostname == groups.swarm_master[0]"
-
-    - name: Deploy monitoring stack
-      command: docker stack deploy -c /tmp/sweady/docker-compose/monitoring/docker-compose.yml monitoring
-      when: "inventory_hostname == groups.swarm_master[0]"
-
-    - name: Sleep
-      command: sleep 30
-      when: "inventory_hostname == groups.swarm_master[0]"
-
-    - name: Deploy Grafana Datasource
-      command: "curl -X POST http://127.0.0.1:3000/api/datasources --header 'Content-Type: application/json' --data-binary '@/tmp/sweady/docker-compose/monitoring/grafana/datasource/prometheus.json'"
-      when: "inventory_hostname == groups.swarm_master[0]"
-
-    - name: Deploy Grafana Dashboard -> Docker
-      command: "curl -X POST http://127.0.0.1:3000/api/dashboards/import --header 'Content-Type: application/json' --data-binary '@/tmp/sweady/docker-compose/monitoring/grafana/dashboards/docker_monitoring.json'"
-      when: "inventory_hostname == groups.swarm_master[0]"
-
-    - name: Deploy Grafana Dashboard -> Prometheus
-      command: "curl -X POST http://127.0.0.1:3000/api/dashboards/import --header 'Content-Type: application/json' --data-binary '@/tmp/sweady/docker-compose/monitoring/grafana/dashboards/prometheus.json'"
-      when: "inventory_hostname == groups.swarm_master[0]"
-
-    - name: Deploy Grafana Dashboard -> Docker Swarm
-      command: "curl -X POST http://127.0.0.1:3000/api/dashboards/import --header 'content-Type: application/json' --data-binary '@/tmp/sweady/docker-compose/monitoring/grafana/dashboards/docker_swarm.json'"
-      when: "inventory_hostname == groups.swarm_master[0]"
+    - include: create/glusterfs_mount.ansible.yaml
+    - include: create/swarm_cluster.ansible.yaml
+    - include: create/install_sweady.ansible.yaml

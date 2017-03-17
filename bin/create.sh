@@ -1,12 +1,7 @@
 #!/usr/bin/env bash
-if [ "$1" == "scaleway" ] || [ "$1" == "aws" ] || [ "$1" == "openstack" ]; then
-    echo "Download Ansible Galaxy"
-    ansible-galaxy install GoContainer.system-update            >> /dev/null 2>&1
-	ansible-galaxy install AerisCloud.disk                      >> /dev/null 2>&1
-	ansible-galaxy install GoContainer.glusterfs                >> /dev/null 2>&1
-	ansible-galaxy install GoContainer.docker-local-persist     >> /dev/null 2>&1
+if [ "$1" == "aws" ]; then
     echo "Launch Terraform"
-    cd terraform/$1
+    cd provider/$1
 
 	terraform validate
 	terraform get
@@ -21,13 +16,5 @@ if [ "$1" == "scaleway" ] || [ "$1" == "aws" ] || [ "$1" == "openstack" ]; then
 	echo "[swarm_glusterfs]" >> ../../tmp/inventory_ansible_swarm
 	terraform output cluster_swarm_glusterfs >> ../../tmp/inventory_ansible_swarm
 
-    if [ "$1" == "scaleway" ]; then
-        ansible-playbook ./../../ansible/init.ansible.yaml -i ../../tmp/inventory_ansible_swarm --user=root
-    fi
-    if [ "$1" == "aws" ]; then
-        ansible-playbook ./../../ansible/init.ansible.yaml -i ../../tmp/inventory_ansible_swarm --private-key ~/.ssh/aws.pem --user=ubuntu
-    fi
-    if [ "$1" == "openstack" ]; then
-        ansible-playbook ./../../ansible/init.ansible.yaml -i ../../tmp/inventory_ansible_swarm --user=cloud
-    fi
+    ansible-playbook ./../../ansible/init.ansible.yaml -i ../../tmp/inventory_ansible_swarm --private-key ~/.ssh/aws.pem --user=ubuntu -e 'disk=xvdb'
 fi

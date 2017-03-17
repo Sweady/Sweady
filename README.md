@@ -3,63 +3,18 @@
 # Install
 Install all composant for run Sweady cluster.
 
-## Launch Sweady for Scaleway
-
-```BASH
-make create provider=scaleway
-```
-
-## Launch Sweady for AWS
+## AWS
 
 ```BASH
 make create provider=aws
 ```
 
-## Launch Sweady for OpenStack
-
-```BASH
-make create provider=openstack
-```
-
-# Update
-Si une modification est faite dans terraform, il faut utiliser la commande ```make update``` pour réaliser les updates de celui-ci.
-
-## Update Sweady for Scaleway
-
-```BASH
-make update provider=scaleway
-```
-
-## Update Sweady for AWS
-
-```BASH
-make update provider=aws
-```
-
-## Update Sweady for OpenStack
-
-```BASH
-make update provider=openstack
-```
-
 # Destroy
-Si vous souhaitez supprimer l'ensemble de votre cluster Sweady, il faut utiliser la commande ```make destroy```.
-/!\ Attention, cela supprime l'ensemble des données ! Il faut réaliser vos sauvegarde si nécessaire avant /!\
+If you want to remove all of your Sweady cluster, use `` `make destroy```.   
+<span style="color:red"> /!\ </span> Caution, this removes all data! It is necessary to carry out your backups if necessary before <span style="color:red"> /!\ </span>
 
-## Destroy Sweady for Scaleway
-
-```BASH
-make destroy provider=scaleway
-```
-
-## Destroy Sweady for AWS
+## AWS
 
 ```BASH
 make destroy provider=aws
-```
-
-## Destroy Sweady for OpenStack
-
-```BASH
-make destroy provider=openstack
 ```

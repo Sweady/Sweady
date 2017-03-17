@@ -1,0 +1,21 @@
+---
+    - name: Define tmp var swarm_master_ip
+      set_fact:
+        swarm_master_ip="{% for host in groups['swarm_master'] %}{{ hostvars[host]['ansible_default_ipv4']['address'] }}{% endfor %}"
+
+    - name: "[swarm_master] swarm init"
+      command: docker swarm init --advertise-addr {{ swarm_master_ip }}
+      when: inventory_hostname in groups['swarm_master']
+
+    - name: "[swarm_master] get token"
+      command: docker swarm join-token -q worker
+      register: swarm_master_token_worker_tmp
+      when: inventory_hostname in groups['swarm_master']
+
+    - name: Define tmp var swarm_master_token_worker
+      set_fact:
+        swarm_master_token_worker="{% for host in groups['swarm_master'] %}{{ hostvars[host]['swarm_master_token_worker_tmp'] }}{% endfor %}"
+
+    - name: "[swarm_node] slave join master"
+      command: docker swarm join --token {{ swarm_master_token_worker.stdout }} {{ swarm_master_ip }}:2377
+      when: inventory_hostname in groups['swarm_node']

@@ -1,16 +1,4 @@
 ---
-- hosts: all
-  become: true
-  become_user: root
-  vars:
-    glusterfs_ppa_use: false
-    disk_additional_disks:
-      - disk: /dev/{{ disk }}
-        fstype: ext4
-        mount_options: defaults
-        mount: /data
-
-  pre_tasks:
     - name: Clear file
       command: rm -rf /etc/apt/apt.conf.d/50unattended*
 
@@ -26,8 +14,3 @@
 
     - name: Clean DPKG
       command: dpkg --configure -a
-
-  roles:
-    - GoContainer.system-update
-    - AerisCloud.disk
-    - GoContainer.glusterfs
