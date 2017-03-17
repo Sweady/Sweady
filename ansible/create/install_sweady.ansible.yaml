@@ -1,8 +1,4 @@
 ---
-    - name: Fix vm.max_map_count
-      command: sysctl -w vm.max_map_count=262144
-      when: "inventory_hostname == groups.swarm_master or inventory_hostname == groups.swarm_node"
-
     - name: Clone project
       git:
         repo: https://github.com/GoContainer/Sweady.git

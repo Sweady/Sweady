@@ -18,3 +18,6 @@
 
   - name: Active Docker Boot
     systemd: name=docker enabled=yes
+
+  - name: Fix vm.max_map_count
+    command: sysctl -w vm.max_map_count=262144

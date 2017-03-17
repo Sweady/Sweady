@@ -5,12 +5,13 @@
 
     - name: "[swarm_master] swarm init"
       command: docker swarm init --advertise-addr {{ swarm_master_ip }}
-      when: inventory_hostname in groups['swarm_master']
+      ignore_errors: yes
+      when: "inventory_hostname == groups.swarm_master[0]"
 
     - name: "[swarm_master] get token"
       command: docker swarm join-token -q worker
       register: swarm_master_token_worker_tmp
-      when: inventory_hostname in groups['swarm_master']
+      when: "inventory_hostname == groups.swarm_master[0]"
 
     - name: Define tmp var swarm_master_token_worker
       set_fact:
