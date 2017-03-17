@@ -16,5 +16,7 @@ if [ "$1" == "aws" ]; then
 	echo "[swarm_glusterfs]" >> ../../tmp/inventory_ansible_swarm
 	terraform output cluster_swarm_glusterfs >> ../../tmp/inventory_ansible_swarm
 
+    sleep 60
+
     ansible-playbook ./../../ansible/init.ansible.yaml -i ../../tmp/inventory_ansible_swarm --private-key ~/.ssh/aws.pem --user=ubuntu -e 'disk=xvdb'
 fi
