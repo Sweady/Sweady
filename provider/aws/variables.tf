@@ -52,6 +52,6 @@ variable "swarm_glusterfs" {
 }
 
 variable "aws_ami" {
-  default = "ami-80c2f6e6"
+  default     = "ami-80c2f6e6"
   description = "Use AMI for VM"
 }
