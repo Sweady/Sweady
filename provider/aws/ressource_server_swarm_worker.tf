@@ -1,4 +1,4 @@
-resource "aws_instance" "swarm_node" {
+resource "aws_instance" "swarm_worker" {
   instance_type               = "${var.aws_type_node}"
   ami                         = "${var.aws_ami}"
   count                       = "${var.swarm_nodes}"
