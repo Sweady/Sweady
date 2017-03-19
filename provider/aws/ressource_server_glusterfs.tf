@@ -13,13 +13,6 @@ resource "aws_instance" "swarm_glusterfs" {
     delete_on_termination = true
   }
 
-  /*
-
-  provisioner "local-exec" {
-    command = "sleep 60 && ansible-playbook -i '${self.public_ip},' --private-key ${var.aws_ssh_key} '../../ansible/swarm_glusterfs.ansible.yaml' -T 300 -e 'disk=xvdb' --user=ubuntu"
-  }
-*/
-
   tags {
     Name = "swarm_glusterfs-${count.index + 1}"
   }

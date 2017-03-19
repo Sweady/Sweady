@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 if [ "$1" == "aws" ]; then
+    echo "Install ansible-galaxy"
+    ansible-galaxy install -r requirements.yml
+
     echo "Launch Terraform"
     cd provider/$1
 
@@ -7,16 +10,12 @@ if [ "$1" == "aws" ]; then
 	terraform get
 	terraform apply
 
-    mkdir ../../tmp/ >> /dev/null 2>&1
-	echo "[all]" > ../../tmp/inventory_ansible_swarm
-	echo "[swarm_master]" >> ../../tmp/inventory_ansible_swarm
-	terraform output cluster_swarm_master >> ../../tmp/inventory_ansible_swarm
-	echo "[swarm_node]" >> ../../tmp/inventory_ansible_swarm
-	terraform output cluster_swarm_node >> ../../tmp/inventory_ansible_swarm
-	echo "[swarm_glusterfs]" >> ../../tmp/inventory_ansible_swarm
-	terraform output cluster_swarm_glusterfs >> ../../tmp/inventory_ansible_swarm
-
     sleep 60
 
-    ansible-playbook ./../../ansible/init.ansible.yaml -i ../../tmp/inventory_ansible_swarm --private-key ~/.ssh/aws.pem --user=ubuntu -e 'disk=xvdb'
+    platform=$(uname)
+    if [[ $platform == 'Linux' ]]; then
+        ansible-playbook ./../../ansible/init.ansible.yaml -i terraform-inventory-linux --private-key ~/.ssh/aws.pem --user=ubuntu -e 'disk=xvdb'
+    elif [[ $platform == 'Darwin' ]]; then
+        ansible-playbook ./../../ansible/init.ansible.yaml -i terraform-inventory-darwin --private-key ~/.ssh/aws.pem --user=ubuntu -e 'disk=xvdb'
+    fi
 fi
