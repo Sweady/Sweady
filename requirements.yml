@@ -1,5 +1,0 @@
----
-- src: GoContainer.system-update
-- src: GoContainer.glusterfs
-- src: GoContainer.docker-local-persist
-- src: AerisCloud.disk
