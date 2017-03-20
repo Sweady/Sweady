@@ -18,3 +18,14 @@ If you want to remove all of your Sweady cluster, use `` `make destroy```.
 ```BASH
 make destroy provider=aws
 ```
+
+# Use Docker 
+
+## Install
+ ```BASH
+ docker run --rm -ti -v ~/.ssh:/root/.ssh -v $(pwd):/sweady sweady/sweady make create provider=aws
+ ```
+## Destroy
+ ```BASH
+ docker run --rm -ti -v ~/.ssh:/root/.ssh -v $(pwd):/sweady sweady/sweady make destroy provider=aws
+ ```
