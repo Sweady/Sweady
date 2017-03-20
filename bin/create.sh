@@ -1,8 +1,5 @@
 #!/usr/bin/env bash
 if [ "$1" == "aws" ]; then
-    echo "Install ansible-galaxy"
-    ansible-galaxy install -r requirements.yml
-
     echo "Launch Terraform"
     cd provider/$1
 

@@ -1,0 +1,20 @@
+---
+- name: Download bin docker volume plugins local-persist
+  get_url:
+    url: https://github.com/CWSpear/local-persist/releases/download/v1.3.0/local-persist-linux-amd64
+    dest: /usr/bin/docker-volume-local-persist
+    mode: 0750
+
+- name: Download service docker volume plugins local-persist
+  get_url:
+    url: https://raw.githubusercontent.com/CWSpear/local-persist/master/init/systemd.service
+    dest: /etc/systemd/system/docker-volume-local-persist.service
+    mode: 0750
+
+- name: Active service docker volume plugins local-persist
+  systemd:
+    daemon_reload: yes
+    state: restarted
+    name: docker-volume-local-persist
+    enabled: yes
+    masked: no

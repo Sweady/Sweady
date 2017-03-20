@@ -1,0 +1,14 @@
+---
+- name: define the tao to follow
+  set_fact:
+    system_tao: "{{ ansible_os_family|lower }}"
+
+- include_vars: "{{ system_tao }}.yml"
+
+- include: "setup-{{ system_tao }}.yml"
+
+- name: ensure GlusterFS is started and enabled at boot
+  service:
+    name: "{{ glusterfs_daemon }}"
+    state: started
+    enabled: yes

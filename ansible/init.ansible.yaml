@@ -6,7 +6,7 @@
   pre_tasks:
     - include: base/pre_tasks.yaml
   roles:
-    - GoContainer.system-update
+    - system-update
 
 # Base
 - hosts: swarm_glusterfs
@@ -23,8 +23,8 @@
     gluster_brick_dir: /data
     gluster_brick_name: gluster
   roles:
-    - AerisCloud.disk
-    - GoContainer.glusterfs
+    - disk
+    - glusterfs
   tasks:
     - include: base/glusterfs.ansible.yaml
 
@@ -32,7 +32,7 @@
   become: true
   become_user: root
   roles:
-    - GoContainer.docker-local-persist
+    - docker-local-persist
   tasks:
     - include: base/install_docker.yaml
 
