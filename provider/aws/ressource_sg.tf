@@ -1,6 +1,5 @@
-resource "aws_security_group" "swarm" {
-  name        = "swarm"
-  description = "Allow all traffic"
+resource "aws_default_security_group" "default" {
+  vpc_id      = "${aws_vpc.sweady.id}"
 
   ingress {
     from_port   = 0

@@ -48,7 +48,7 @@
       when: "inventory_hostname == groups.swarm_manager[0]"
 
     - name: Sleep
-      command: sleep 30
+      command: sleep 45
       when: "inventory_hostname == groups.swarm_manager[0]"
 
     - name: Deploy Grafana Datasource

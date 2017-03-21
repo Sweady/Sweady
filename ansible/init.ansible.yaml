@@ -1,52 +1,15 @@
 ---
-# Init & full update
-- hosts: all
+- hosts: swarm_manager:swarm_worker
   become: true
   become_user: root
+  vars:
+    efs_mount_point: /var/lib/docker/volumes
   pre_tasks:
     - include: base/pre_tasks.yaml
   roles:
     - system-update
-
-# Base
-- hosts: swarm_glusterfs
-  become: true
-  become_user: root
-  vars:
-    glusterfs_ppa_use: false
-    disk_additional_disks:
-      - disk: /dev/{{ disk }}
-        fstype: ext4
-        mount_options: defaults
-        mount: /data
-    gluster_mount_dir: /var/lib/docker/volumes
-    gluster_brick_dir: /data
-    gluster_brick_name: gluster
-  roles:
-    - disk
-    - glusterfs
-  tasks:
-    - include: base/glusterfs.ansible.yaml
-
-- hosts: swarm_manager:swarm_worker
-  become: true
-  become_user: root
-  roles:
-    - docker-local-persist
   tasks:
     - include: base/install_docker.yaml
-
-# Create
-- hosts: all
-  become: true
-  become_user: root
-  vars:
-    glusterfs_ppa_use: false
-    gluster_mount_dir: /var/lib/docker/volumes
-    gluster_brick_dir: /data
-    gluster_brick_name: gluster
-
-  tasks:
-    - include: create/glusterfs_mount.ansible.yaml
-    - include: create/swarm_cluster.ansible.yaml
-    - include: create/install_sweady.ansible.yaml
+    - include: base/mount_efs.yaml
+    - include: base/swarm_cluster.ansible.yaml
+    - include: base/install_sweady.ansible.yaml

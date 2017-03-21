@@ -26,11 +26,6 @@ variable "aws_type_node" {
   description = "AWS type for node"
 }
 
-variable "aws_type_glusterfs" {
-  default     = "t2.micro"
-  description = "AWS type for glusterfs"
-}
-
 variable "aws_ami_user" {
   default     = "root"
   description = "Ami user connection"
@@ -44,11 +39,6 @@ variable "aws_ssh_key" {
 variable "swarm_nodes" {
   default     = 1
   description = "Number of nodes in the cluster"
-}
-
-variable "swarm_glusterfs" {
-  default     = 4
-  description = "Number of glusterfs in the cluster"
 }
 
 variable "aws_ami" {
