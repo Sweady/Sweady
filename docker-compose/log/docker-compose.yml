@@ -11,10 +11,12 @@ networks:
 services:
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:5.2.1
+    ports:
+      - "9200:9200"
     deploy:
       placement:
         constraints:
-          - node.role == worker
+          - node.role == manager
     volumes:
       - elasticsearch_data:/usr/share/elasticsearch/data
     networks:
@@ -25,7 +27,7 @@ services:
     deploy:
       placement:
         constraints:
-          - node.role == worker
+          - node.role == manager
     environment:
       TZ: Europe/Paris
       LOGSPOUT: ignore
@@ -53,3 +55,18 @@ services:
       - log
     depends_on:
       - elasticsearch
+
+  logspout:
+    image: bekt/logspout-logstash
+    environment:
+      ROUTE_URIS: logstash://logstash:5000
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - log
+    depends_on:
+      - logstash
