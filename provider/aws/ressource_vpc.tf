@@ -35,6 +35,7 @@ resource "aws_default_route_table" "r" {
     cidr_block = "0.0.0.0/0"
     gateway_id = "${aws_internet_gateway.default.id}"
   }
+
   tags {
     Name = "default table"
   }

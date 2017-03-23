@@ -22,7 +22,7 @@ variable "aws_type_manager" {
 }
 
 variable "aws_type_node" {
-  default     = "t2.micro"
+  default     = "t2.small"
   description = "AWS type for node"
 }
 
