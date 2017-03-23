@@ -40,15 +40,17 @@
       when: "inventory_hostname == groups.swarm_manager[0]"
 
     - name: Deploy logging stack
-      command: docker stack deploy -c /tmp/sweady/docker-compose/log/docker-compose.yml log
+      command: docker stack deploy -c /tmp/sweady/docker-compose/log/docker-compose.yml sweady_loglog
       when: "inventory_hostname == groups.swarm_manager[0]"
 
     - name: Deploy monitoring stack
-      command: docker stack deploy -c /tmp/sweady/docker-compose/monitoring/docker-compose.yml monitoring
+      command: docker stack deploy -c /tmp/sweady/docker-compose/monitoring/docker-compose.yml sweady_monitoring
       when: "inventory_hostname == groups.swarm_manager[0]"
 
-    - name: Sleep
-      command: sleep 45
+    - name: Wait grafana
+      wait_for:
+        port: 3000
+        delay: 20
       when: "inventory_hostname == groups.swarm_manager[0]"
 
     - name: Deploy Grafana Datasource
