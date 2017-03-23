@@ -16,7 +16,7 @@ services:
     deploy:
       placement:
         constraints:
-          - node.role == manager
+          - node.role == worker
     volumes:
       - elasticsearch_data:/usr/share/elasticsearch/data
     networks:
@@ -61,9 +61,7 @@ services:
     environment:
       ROUTE_URIS: logstash://logstash:5000
     deploy:
-      placement:
-        constraints:
-          - node.role == manager
+      mode: global
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
