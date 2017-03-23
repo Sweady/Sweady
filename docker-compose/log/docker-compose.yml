@@ -11,8 +11,6 @@ networks:
 services:
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:5.2.1
-    ports:
-      - "9200:9200"
     deploy:
       placement:
         constraints:

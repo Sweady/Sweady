@@ -27,8 +27,6 @@ services:
       - cadvisor
     networks:
       - monitoring
-    ports:
-      -  "9091:9091"
 
   grafana:
     image: grafana/grafana
