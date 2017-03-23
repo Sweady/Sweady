@@ -1,7 +1,7 @@
 ---
     - name: Clone project
       git:
-        repo: https://github.com/GoContainer/Sweady.git
+        repo: https://github.com/Sweady/Sweady.git
         dest: /tmp/sweady
       when: "inventory_hostname == groups.swarm_manager[0]"
 
