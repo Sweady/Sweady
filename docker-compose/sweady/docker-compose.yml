@@ -16,9 +16,9 @@ services:
 
   ntpd:
     image: sweady/ntpd
-    privileged: true
     deploy:
       mode: global
+    privileged: true
     networks:
       - sweady
 
