@@ -36,15 +36,15 @@
       when: "inventory_hostname == groups.swarm_manager[0]"
 
     - name: Deploy Sweady stack
-      command: docker stack deploy -c /tmp/sweady/docker-compose/sweady/docker-compose.yml sweady
+      command: docker stack deploy -c /tmp/sweady/engine/docker-compose/sweady/docker-compose.yml sweady
       when: "inventory_hostname == groups.swarm_manager[0]"
 
     - name: Deploy logging stack
-      command: docker stack deploy -c /tmp/sweady/docker-compose/log/docker-compose.yml sweady_loglog
+      command: docker stack deploy -c /tmp/sweady/engine/docker-compose/log/docker-compose.yml sweady_loglog
       when: "inventory_hostname == groups.swarm_manager[0]"
 
     - name: Deploy monitoring stack
-      command: docker stack deploy -c /tmp/sweady/docker-compose/monitoring/docker-compose.yml sweady_monitoring
+      command: docker stack deploy -c /tmp/sweady/engine/docker-compose/monitoring/docker-compose.yml sweady_monitoring
       when: "inventory_hostname == groups.swarm_manager[0]"
 
     - name: Wait grafana
@@ -54,17 +54,17 @@
       when: "inventory_hostname == groups.swarm_manager[0]"
 
     - name: Deploy Grafana Datasource
-      command: "curl -X POST http://127.0.0.1:3000/api/datasources --header 'Content-Type: application/json' --data-binary '@/tmp/sweady/docker-compose/monitoring/grafana/datasource/prometheus.json'"
+      command: "curl -X POST http://127.0.0.1:3000/api/datasources --header 'Content-Type: application/json' --data-binary '@/tmp/sweady/engine/docker-compose/monitoring/grafana/datasource/prometheus.json'"
       when: "inventory_hostname == groups.swarm_manager[0]"
 
     - name: Deploy Grafana Dashboard -> Docker
-      command: "curl -X POST http://127.0.0.1:3000/api/dashboards/import --header 'Content-Type: application/json' --data-binary '@/tmp/sweady/docker-compose/monitoring/grafana/dashboards/docker_monitoring.json'"
+      command: "curl -X POST http://127.0.0.1:3000/api/dashboards/import --header 'Content-Type: application/json' --data-binary '@/tmp/sweady/engine/docker-compose/monitoring/grafana/dashboards/docker_monitoring.json'"
       when: "inventory_hostname == groups.swarm_manager[0]"
 
     - name: Deploy Grafana Dashboard -> Prometheus
-      command: "curl -X POST http://127.0.0.1:3000/api/dashboards/import --header 'Content-Type: application/json' --data-binary '@/tmp/sweady/docker-compose/monitoring/grafana/dashboards/prometheus.json'"
+      command: "curl -X POST http://127.0.0.1:3000/api/dashboards/import --header 'Content-Type: application/json' --data-binary '@/tmp/sweady/engine/docker-compose/monitoring/grafana/dashboards/prometheus.json'"
       when: "inventory_hostname == groups.swarm_manager[0]"
 
     - name: Deploy Grafana Dashboard -> Docker Swarm
-      command: "curl -X POST http://127.0.0.1:3000/api/dashboards/import --header 'content-Type: application/json' --data-binary '@/tmp/sweady/docker-compose/monitoring/grafana/dashboards/docker_swarm.json'"
+      command: "curl -X POST http://127.0.0.1:3000/api/dashboards/import --header 'content-Type: application/json' --data-binary '@/tmp/sweady/engine/docker-compose/monitoring/grafana/dashboards/docker_swarm.json'"
       when: "inventory_hostname == groups.swarm_manager[0]"

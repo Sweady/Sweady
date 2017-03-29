@@ -1,0 +1,20 @@
+---
+- hosts: swarm_manager:swarm_worker
+  become: true
+  become_user: root
+  tasks:
+    - name: Install the package "python-pip"
+      apt:
+        name: python-pip
+        state: present
+
+    - name: Upload test files
+      synchronize:
+        src: "."
+        dest: "/tmp/sweady_test/"
+
+    - name: Install testinfra
+      command: pip install testinfra
+
+    - name: Run TEST
+      command: pytest /tmp/sweady_test/tests

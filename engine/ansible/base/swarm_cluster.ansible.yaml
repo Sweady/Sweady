@@ -20,3 +20,4 @@
     - name: "[swarm_worker] slave join master"
       command: docker swarm join --token {{ swarm_manager_token_worker.stdout }} {{ swarm_manager_ip }}:2377
       when: inventory_hostname in groups['swarm_worker']
+      ignore_errors: yes
