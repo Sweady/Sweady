@@ -1,0 +1,24 @@
+{
+  "header": {
+    "version": "v0.1.0"
+  },
+  "provider": {
+    "aws": {
+      "access_key": "",
+      "secret_key": "",
+      "region": "",
+      "key_name": "",
+      "type_manager": "",
+      "type_node": "",
+      "ami_user": "",
+      "ssh_key": "",
+      "swarm_nodes": "",
+      "ami": ""
+    }
+  },
+  "component": {
+    "sweady" : true,
+    "log" : true,
+    "monitoring" : true
+  }
+}
