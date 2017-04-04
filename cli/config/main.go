@@ -24,3 +24,12 @@ type Configuration struct {
 		Sweady     bool `json:"sweady"`
 	} `json:"component"`
 }
+
+func Init() *Configuration {
+	c := &Configuration{}
+	c.Header.Version = "v0.1.0"
+	c.Component.Log = true
+	c.Component.Monitoring = true
+	c.Component.Sweady = true
+	return c
+}

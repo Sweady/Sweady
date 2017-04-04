@@ -5,20 +5,20 @@
   "provider": {
     "aws": {
       "access_key": "",
-      "secret_key": "",
-      "region": "",
-      "key_name": "",
-      "type_manager": "",
-      "type_node": "",
+      "ami": "",
       "ami_user": "",
+      "key_name": "",
+      "region": "",
+      "secret_key": "",
       "ssh_key": "",
       "swarm_nodes": "",
-      "ami": ""
+      "type_manager": "",
+      "type_node": ""
     }
   },
   "component": {
-    "sweady" : true,
-    "log" : true,
-    "monitoring" : true
+    "log": true,
+    "monitoring": true,
+    "sweady": true
   }
 }

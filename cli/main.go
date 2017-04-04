@@ -1,13 +1,13 @@
 package main
 
 import (
-	"encoding/json"
-	"os"
-
 	"./config"
+	"bytes"
+	"encoding/json"
 	"fmt"
 	"github.com/urfave/cli"
 	"io/ioutil"
+	"os"
 )
 
 func main() {
@@ -31,27 +31,12 @@ func main() {
 	app.Run(os.Args)
 }
 
-func check(e error) {
-	if e != nil {
-		panic(e)
-	}
-}
-
 func initAction(c *cli.Context) error {
+	prettyConf, _ := json.Marshal(config.Init())
+	prettyConf, _ = prettyJson(prettyConf)
 
-	var d config.Configuration
-
-	var data1 = []byte(`{"header":{"version":"v0.1.0"}, "component":{"log":true,"monitoring":true,"sweady":true}}`)
-
-	if e := json.Unmarshal(data1, &d); e != nil {
-		fmt.Println("Error:", e)
-	}
-
-	b, err := json.Marshal(d)
+	err := ioutil.WriteFile("./sweady_config.json", prettyConf, 0644)
 	check(err)
-
-	err1 := ioutil.WriteFile("./config.dist.json", b, 0644)
-	check(err1)
 
 	return nil
 }
@@ -72,4 +57,16 @@ func createAction(c *cli.Context) error {
 	}
 
 	return nil
+}
+
+func check(e error) {
+	if e != nil {
+		panic(e)
+	}
+}
+
+func prettyJson(b []byte) ([]byte, error) {
+	var out bytes.Buffer
+	err := json.Indent(&out, b, "", "  ")
+	return out.Bytes(), err
 }
