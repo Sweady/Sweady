@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 )
 
-type JsonValidator struct{
+type JsonValidator struct {
 	S string
 }
 

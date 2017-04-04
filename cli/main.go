@@ -1,12 +1,12 @@
 package main
 
 import (
-	"os"
 	"encoding/json"
+	"os"
 
-	"github.com/urfave/cli"
 	"./config"
 	"fmt"
+	"github.com/urfave/cli"
 	"io/ioutil"
 )
 
@@ -15,16 +15,16 @@ func main() {
 
 	app.Commands = []cli.Command{
 		{
-			Name: "init",
+			Name:        "init",
 			Description: "Initialization of template",
-			Category: "Sweady",
-			Action: initAction,
+			Category:    "Sweady",
+			Action:      initAction,
 		},
 		{
-			Name: "create",
+			Name:        "create",
 			Description: "Create new sweady prod cluster",
-			Category: "Sweady",
-			Action: createAction,
+			Category:    "Sweady",
+			Action:      createAction,
 		},
 	}
 
@@ -65,7 +65,7 @@ func createAction(c *cli.Context) error {
 	}
 
 	var i config.ConfValidatorInterface = config.JsonValidator{string(dat)}
-	if (i.IsValid()) {
+	if i.IsValid() {
 		fmt.Print("Valid")
 	} else {
 		fmt.Print("Non valid")

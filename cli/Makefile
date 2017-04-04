@@ -3,12 +3,16 @@ VERSION := $(shell git describe --tags)
 
 build:	 		build				## Build for MacOS
 build-all:		build-all			## Build for all plateform
+fmt:			fmt					## Clear indentation in code
 
 build: deps
 	go build -o bin/sweady-darwin
 
 build-all: deps
 	gox -ldflags "-X main.version=${VERSION}" -os="linux darwin windows" -arch="amd64 386" -output="bin/{{.OS}}-{{.Arch}}/sweady" .
+
+fmt:
+	go fmt ./...
 
 deps:
 	export AUTO_GOPATH=1
