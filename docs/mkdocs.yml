@@ -4,10 +4,4 @@ theme_dir: material
 
 pages:
   - Home: index.md
-  - EN:
-    - Home: en/index.md
-    - Install: en/install.md
-
-  - FR:
-    - Accueil: fr/index.md
-    - Installation: fr/install.md
+  - Install: install.md
