@@ -4,3 +4,5 @@ import:
   version: ^1.19.1
 - package: github.com/spf13/viper
   version: master
+- package: github.com/fatih/color
+  version: master
