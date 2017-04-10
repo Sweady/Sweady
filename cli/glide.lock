@@ -1,7 +1,10 @@
-hash: 471e10d21ad8db2b980f7b9e4efba98ff40aa367875d80a6b1310830475d6bac
-updated: 2017-03-30T20:20:41.485455+02:00
+hash: 7163eda099d93e2ae618a83e40c24dd99b795d95aec1b2e5b650c7d76a3f726b
+updated: 2017-04-07T20:01:02.350386+02:00
 imports:
+- name: github.com/fatih/color
+  version: 9131ab34cf20d2f6d83fdc67168a5430d1c7dc23
 - name: github.com/spf13/viper
   version: 84f94806c67f59dd7ae87bc5351f7a9c94a4558d
 - name: github.com/urfave/cli
+  version: 0bdeddeeb0f650497d603c4ad7b20cfe685682f6
 testImports: []
