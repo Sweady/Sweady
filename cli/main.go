@@ -23,18 +23,17 @@ func main() {
 			Action:      initAction,
 		},
 		{
-			Name:        "start",
-			Description: "Start sweady prod cluster",
+			Name:        "create",
+			Description: "Create sweady prod cluster",
 			Category:    "Sweady",
-			Action:      startAction,
+			Action:      createAction,
 		},
 	}
 
 	app.Run(os.Args)
 }
 
-func initAction(c *cli.Context) error {
-
+func initAction(*cli.Context) error {
 	color.Green("Initialization of Sweady")
 
 	if !askForConfirmation() {
@@ -55,8 +54,7 @@ func initAction(c *cli.Context) error {
 	return nil
 }
 
-func startAction(c *cli.Context) error {
-
+func createAction(*cli.Context) error {
 	color.Green("Welcome with Sweady")
 	dat, err := ioutil.ReadFile("./sweady_config.json")
 	if err != nil {

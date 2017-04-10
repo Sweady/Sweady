@@ -1,10 +1,19 @@
-hash: 7163eda099d93e2ae618a83e40c24dd99b795d95aec1b2e5b650c7d76a3f726b
-updated: 2017-04-07T20:01:02.350386+02:00
+hash: 3d657cfef6e5c6f5024faf8749434ed729f20f810404590cc5d2d9c486843244
+updated: 2017-04-10T18:20:20.422331287+02:00
 imports:
 - name: github.com/fatih/color
   version: 9131ab34cf20d2f6d83fdc67168a5430d1c7dc23
-- name: github.com/spf13/viper
-  version: 84f94806c67f59dd7ae87bc5351f7a9c94a4558d
+- name: github.com/mattn/go-colorable
+  version: 5411d3eea5978e6cdc258b30de592b60df6aba96
+  repo: https://github.com/mattn/go-colorable
+- name: github.com/mattn/go-isatty
+  version: 57fdcb988a5c543893cc61bce354a6e24ab70022
+  repo: https://github.com/mattn/go-isatty
 - name: github.com/urfave/cli
   version: 0bdeddeeb0f650497d603c4ad7b20cfe685682f6
+- name: golang.org/x/sys
+  version: e24f485414aeafb646f6fca458b0bf869c0880a1
+  repo: https://go.googlesource.com/sys
+  subpackages:
+  - unix
 testImports: []
