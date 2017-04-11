@@ -45,3 +45,8 @@ variable "aws_ami" {
   default     = "ami-80c2f6e6"
   description = "Use AMI for VM"
 }
+
+variable "swarm_manager" {
+  default     = 1
+  description = "Number of manager in the cluster"
+}

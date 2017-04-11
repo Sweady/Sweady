@@ -10,17 +10,4 @@ resource "aws_instance" "swarm_worker" {
   tags {
     Name = "swarm_node-${count.index + 1}"
   }
-
-//  connection {
-//    type        = "ssh"
-//    user        = "ubuntu"
-//    private_key = "${file(var.aws_ssh_key)}"
-//  }
-//
-//  provisioner "remote-exec" {
-//    inline = [
-//      "sudo docker swarm leave",
-//    ]
-//    when = "destroy"
-//  }
 }
