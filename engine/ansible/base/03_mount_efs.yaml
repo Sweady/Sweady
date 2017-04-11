@@ -1,15 +1,15 @@
 ---
-  - name: "apt| install nfs-common"
+  - name: "[GLOBAL] apt| install nfs-common"
     apt:
       name: nfs-common
       state: installed
 
-  - name: "mount| create directory"
+  - name: "[GLOBAL] mount| create directory"
     file:
       path: "{{ efs_mount_point }}"
       state: directory
 
-  - name: "mount| mount efs volumes"
+  - name: "[GLOBAL] mount| mount efs volumes"
     mount:
       name: "{{ efs_mount_point }}"
       src: "{{ efs_url }}:/"

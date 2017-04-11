@@ -1,0 +1,25 @@
+---
+- name: "[GLOBAL] Autoremove unused packages"
+  become: true
+  command: apt -y autoremove
+  register: autoremove_output
+  changed_when: "'0 upgraded' not in autoremove_output.stdout"
+  tags:
+    - apt
+    - autoremove
+
+- name: "[GLOBAL] Update cache"
+  become: true
+  apt:
+    update_cache: yes
+  tags:
+    - apt
+    - updatecache
+
+- name: "[GLOBAL] Update all packages to the latest version"
+  become: true
+  apt:
+    upgrade: dist
+  tags:
+    - apt
+    - upgrade

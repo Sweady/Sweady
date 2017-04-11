@@ -1,0 +1,35 @@
+---
+  - name: "[GLOBAL] Define tmp var swarm_manager_ip"
+    set_fact:
+      swarm_manager_ip="{% for host in groups['name_swarm_manager-1'] %}{{ hostvars[host]['ansible_default_ipv4']['address'] }}{% endfor %}"
+
+
+  - name: "[MANAGER] swarm init"
+    command: docker swarm init --advertise-addr {{ swarm_manager_ip }}
+    ignore_errors: yes
+    when: "inventory_hostname == groups.swarm_manager[0]"
+
+  - name: "[MANAGER] get token for worker"
+    command: docker swarm join-token -q worker
+    register: swarm_token_worker_tmp
+    when: "inventory_hostname == groups.swarm_manager[0]"
+
+  - name: "[MANAGER] get token for manager"
+    command: docker swarm join-token -q manager
+    register: swarm_token_manager_tmp
+    when: "inventory_hostname == groups.swarm_manager[0]"
+
+  - name: "[GLOBAL] Define var"
+    set_fact:
+      swarm_token_worker="{% for host in groups['name_swarm_manager-1'] %}{{ hostvars[host]['swarm_token_worker_tmp'] }}{% endfor %}"
+      swarm_token_manager="{% for host in groups['name_swarm_manager-1'] %}{{ hostvars[host]['swarm_token_manager_tmp'] }}{% endfor %}"
+
+  - name: "[WORKER] worker join"
+    command: docker swarm join --token {{ swarm_token_worker.stdout }} {{ swarm_manager_ip }}:2377
+    when: "inventory_hostname in groups['swarm_worker']"
+    ignore_errors: yes
+
+  - name: "[MANAGER] master join"
+    command: docker swarm join --token {{ swarm_token_manager.stdout }} {{ swarm_manager_ip }}:2377
+    when: "inventory_hostname in groups['swarm_manager'] and inventory_hostname != groups.swarm_manager[0]"
+    ignore_errors: yes
