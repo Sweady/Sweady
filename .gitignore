@@ -8,3 +8,7 @@ __pycache__/
 /engine/tests/.cache/
 /cli/vendor/
 /cli/bin/
+/cli/sweady.env
+/cli/sweady_config.json
+*.tmp
+/engine/provider/aws/terraform.tfvars.tmp
