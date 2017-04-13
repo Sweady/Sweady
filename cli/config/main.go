@@ -6,16 +6,15 @@ type Configuration struct {
 	} `json:"header"`
 	Provider struct {
 		Aws struct {
-			AccessKey   string `json:"access_key" env:"access_key"`
-			Ami         string `json:"ami" env:"ami"`
-			AmiUser     string `json:"ami_user" env:"ami_user"`
-			KeyName     string `json:"key_name" env:"key_name"`
-			Region      string `json:"region" env:"region"`
-			SecretKey   string `json:"secret_key" env:"secret_key"`
-			SSHKey      string `json:"ssh_key" env:"ssh_key"`
-			SwarmNodes  string `json:"swarm_nodes" env:"swarm_nodes"`
-			TypeManager string `json:"type_manager" env:"type_manager"`
-			TypeNode    string `json:"type_node" env:"type_node"`
+			AccessKey    string `json:"access_key" env:"TF_VAR_aws_access_key"`
+			SecretKey    string `json:"secret_key" env:"TF_VAR_aws_secret_key"`
+			Ami          string `json:"ami" env:"TF_VAR_aws_ami"`
+			KeyName      string `json:"key_name" env:"TF_VAR_aws_key_name"`
+			Region       string `json:"region" env:"TF_VAR_aws_region"`
+			SwarmNodes   string `json:"swarm_nodes" env:"TF_VAR_swarm_nodes"`
+			SwarmManager string `json:"swarm_maanger" env:"TF_VAR_swarm_manager"`
+			TypeManager  string `json:"type_manager" env:"TF_VAR_aws_type_manager"`
+			TypeNode     string `json:"type_node" env:"TF_VAR_aws_type_node"`
 		} `json:"aws"`
 	} `json:"provider"`
 	Component struct {

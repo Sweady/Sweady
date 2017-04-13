@@ -129,11 +129,11 @@ func readRecursive(copy, original reflect.Value, file *os.File) {
 				switch val.Kind() {
 				case reflect.Bool, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
 					value := strconv.FormatBool(val.Bool())
-					_, _ = file.WriteString(original.Type().Field(i).Tag.Get("env") + ": " + value + "\n")
+					_, _ = file.WriteString(original.Type().Field(i).Tag.Get("env") + "=" + value + "\n")
 
 				default:
 					value := val.String()
-					_, _ = file.WriteString(original.Type().Field(i).Tag.Get("env") + ": " + value + "\n")
+					_, _ = file.WriteString(original.Type().Field(i).Tag.Get("env") + "=" + value + "\n")
 				}
 			}
 
