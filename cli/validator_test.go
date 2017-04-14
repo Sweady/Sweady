@@ -1,4 +1,4 @@
-package config
+package main
 
 import (
 	"testing"
@@ -6,7 +6,7 @@ import (
 
 func TestCorrectJSON(t *testing.T) {
 	str := `{"page": 1, "fruits": ["apple", "peach"]}`
-	var i ConfValidatorInterface = JsonValidator{string(str)}
+	var i ValidatorInterface = JsonValidator{string(str)}
 
 	actualResult := i.IsValid()
 	expectedResult := true
@@ -18,7 +18,7 @@ func TestCorrectJSON(t *testing.T) {
 
 func TestNotCorrectJSON(t *testing.T) {
 	str := `{"page": 1 "fruits": ["apple", "peach"]}`
-	var i ConfValidatorInterface = JsonValidator{string(str)}
+	var i ValidatorInterface = JsonValidator{string(str)}
 
 	actualResult := i.IsValid()
 	expectedResult := false
