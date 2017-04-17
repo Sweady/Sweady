@@ -1,7 +1,0 @@
-site_name: Sweady Documentation
-
-theme_dir: material
-
-pages:
-  - Home: index.md
-  - Install: install.md
