@@ -12,3 +12,4 @@ __pycache__/
 /cli/sweady_config.json
 *.tmp
 /engine/provider/aws/terraform.tfvars.tmp
+/website/public/
