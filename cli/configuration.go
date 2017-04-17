@@ -1,4 +1,4 @@
-package config
+package main
 
 type Configuration struct {
 	Header struct {
