@@ -14,3 +14,4 @@
 
     - name: "[GLOBAL] Clean DPKG"
       command: dpkg --configure -a
+      ignore_errors: yes

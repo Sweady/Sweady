@@ -9,8 +9,6 @@ resource "aws_efs_file_system" "sweady" {
 resource "aws_efs_mount_target" "sweady" {
   file_system_id = "${aws_efs_file_system.sweady.id}"
   subnet_id      = "${aws_subnet.eu-west-1a.id}"
-
-  //  security_groups = ["${aws_security_group.swarm.name}"]
 }
 
 output "mount_target_master_public_subnets_dns_name" {

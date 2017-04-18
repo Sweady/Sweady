@@ -11,9 +11,8 @@ variable "aws_region" {
   description = "AWS Region"
 }
 
-variable "aws_key_name" {
-  default     = ""
-  description = "AWS key name"
+variable "aws_ssh_key" {
+  description = "ssh key"
 }
 
 variable "aws_type_manager" {
@@ -24,16 +23,6 @@ variable "aws_type_manager" {
 variable "aws_type_node" {
   default     = "t2.small"
   description = "AWS type for node"
-}
-
-variable "aws_ami_user" {
-  default     = "root"
-  description = "Ami user connection"
-}
-
-variable "aws_ssh_key" {
-  default     = "~/.ssh/id_rsa"
-  description = "AWS SSH key"
 }
 
 variable "swarm_nodes" {
