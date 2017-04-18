@@ -13,3 +13,6 @@ __pycache__/
 *.tmp
 /engine/provider/aws/terraform.tfvars.tmp
 /website/public/
+sweady_config.json
+.env
+/engine/data/
