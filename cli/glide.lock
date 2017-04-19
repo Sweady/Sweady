@@ -1,16 +1,20 @@
-hash: 3d657cfef6e5c6f5024faf8749434ed729f20f810404590cc5d2d9c486843244
-updated: 2017-04-10T18:20:20.422331287+02:00
+hash: ea29e829bcb6b593e9a54c7d2e7e1a34f47866bbc4ff60c335cd915d7eb86ea2
+updated: 2017-04-19T15:40:37.556905285+02:00
 imports:
 - name: github.com/fatih/color
   version: 9131ab34cf20d2f6d83fdc67168a5430d1c7dc23
+- name: github.com/inconshreveable/mousetrap
+  version: 76626ae9c91c4f2a10f34cad8ce83ea42c93bb75
 - name: github.com/mattn/go-colorable
   version: 5411d3eea5978e6cdc258b30de592b60df6aba96
   repo: https://github.com/mattn/go-colorable
 - name: github.com/mattn/go-isatty
   version: 57fdcb988a5c543893cc61bce354a6e24ab70022
   repo: https://github.com/mattn/go-isatty
-- name: github.com/urfave/cli
-  version: 0bdeddeeb0f650497d603c4ad7b20cfe685682f6
+- name: github.com/spf13/cobra
+  version: b655df6ce84126fe9272a3cd4d70555a3a4cfed4
+- name: github.com/spf13/pflag
+  version: 2300d0f8576fe575f71aaa5b9bbe4e1b0dc2eb51
 - name: golang.org/x/sys
   version: e24f485414aeafb646f6fca458b0bf869c0880a1
   repo: https://go.googlesource.com/sys
