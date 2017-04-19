@@ -13,19 +13,22 @@ import (
 
 func main() {
 	app := cli.NewApp()
+	app.Name = "Sweady"
+	app.Usage = "First cluster docker swarm ready for production"
+	app.Version = "0.1.0"
 
 	app.Commands = []cli.Command{
 		{
-			Name:        "init",
-			Description: "Initialization of template",
-			Category:    "Sweady",
-			Action:      initAction,
+			Name:     "init",
+			Usage:    "Initialization of template",
+			Category: "Sweady",
+			Action:   initAction,
 		},
 		{
-			Name:        "create",
-			Description: "Create sweady prod cluster",
-			Category:    "Sweady",
-			Action:      createAction,
+			Name:     "create",
+			Usage:    "Create sweady prod cluster",
+			Category: "Sweady",
+			Action:   createAction,
 		},
 	}
 

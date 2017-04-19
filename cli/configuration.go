@@ -2,7 +2,7 @@ package main
 
 type Configuration struct {
 	Header struct {
-		Version string `json:"version"`
+		Version     string `json:"version"`
 		Environment string `json:"environment"`
 	} `json:"header"`
 	Provider struct {
