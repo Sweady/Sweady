@@ -1,3 +1,4 @@
 /cli/vendor/
 /cli/bin/
 sweady_config.json
+.env
