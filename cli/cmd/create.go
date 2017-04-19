@@ -2,10 +2,12 @@ package cmd
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 	"io/ioutil"
 	"os"
+	"os/exec"
 	"reflect"
 	"strconv"
 )
@@ -36,6 +38,15 @@ var createCmd = &cobra.Command{
 		generateEnvFile(jsontype)
 
 		color.Green("Starting cluster")
+		cmdStr := "docker run --rm --env-file .env sweady/build:" + jsontype.Header.Version + " make create provider=aws"
+		cmds := exec.Command("/bin/sh", "-c", cmdStr)
+		output, err := cmds.CombinedOutput()
+		if err != nil {
+			color.Red(fmt.Sprint(err) + ": " + string(output))
+			os.Exit(1)
+		} else {
+			color.Yellow(string(output))
+		}
 
 		return
 	},
