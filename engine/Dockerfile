@@ -17,3 +17,4 @@ RUN apk update && \
 
 WORKDIR /sweady
 ADD . /sweady
+VOLUME /sweady/data
