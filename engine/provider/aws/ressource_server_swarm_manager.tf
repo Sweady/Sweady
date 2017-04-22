@@ -1,5 +1,5 @@
 resource "aws_instance" "swarm_manager" {
-  instance_type               = "${var.aws_type_node}"
+  instance_type               = "${var.aws_type_manager}"
   ami                         = "${var.aws_ami}"
   count                       = "${var.swarm_manager}"
   associate_public_ip_address = true
