@@ -4,6 +4,7 @@ type Configuration struct {
 	Header struct {
 		Version     string `json:"version"`
 		Environment string `json:"environment"`
+		DataDir     string `json:"data_dir"`
 	} `json:"header"`
 	Provider struct {
 		Aws struct {
@@ -11,7 +12,7 @@ type Configuration struct {
 			SecretKey    string `json:"secret_key" env:"TF_VAR_aws_secret_key"`
 			Ami          string `json:"ami" env:"TF_VAR_aws_ami"`
 			KeyName      string `json:"ssh_key" env:"TF_VAR_aws_ssh_key"`
-			Region       string `json:"region" env:"TF_VAR_aws_region"`
+			Region       string `json:"region"`
 			SwarmNodes   string `json:"swarm_nodes" env:"TF_VAR_swarm_nodes"`
 			SwarmManager string `json:"swarm_manager" env:"TF_VAR_swarm_manager"`
 			TypeManager  string `json:"type_manager" env:"TF_VAR_aws_type_manager"`

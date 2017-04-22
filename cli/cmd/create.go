@@ -1,13 +1,19 @@
 package cmd
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
+	dockType "github.com/docker/docker/api/types"
+	"github.com/docker/docker/api/types/container"
+	"github.com/docker/docker/api/types/mount"
+	"github.com/docker/docker/api/types/network"
+	"github.com/docker/docker/client"
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
+	"io"
 	"io/ioutil"
 	"os"
-	"os/exec"
 	"reflect"
 	"strconv"
 )
@@ -34,20 +40,8 @@ var createCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		color.Green("Creation of environnement file")
-		generateEnvFile(jsontype)
-
 		color.Green("Starting cluster")
-		cmdStr := "docker run --rm --env-file .env sweady/build:" + jsontype.Header.Version + " make create provider=aws"
-		cmds := exec.Command("/bin/sh", "-c", cmdStr)
-		output, err := cmds.CombinedOutput()
-		if err != nil {
-			color.Red(fmt.Sprint(err) + ": " + string(output))
-			os.Exit(1)
-		} else {
-			color.Yellow(string(output))
-		}
-
+		launchDocker(generateEnv(jsontype), "sweady/build:latest", []string{"make", "create", "provider=aws"}, jsontype.Header.DataDir)
 		return
 	},
 }
@@ -65,37 +59,36 @@ func (j JsonValidator) IsValid() bool {
 	return json.Unmarshal([]byte(j.S), &js) == nil
 }
 
-func generateEnvFile(obj interface{}) interface{} {
+func generateEnv(obj interface{}) []string {
 	original := reflect.ValueOf(obj)
 	copy := reflect.New(original.Type()).Elem()
 
-	file, _ := os.Create(".env")
-	writeEnvFile(copy, original, file)
-	file.Sync()
+	var a []string
+	writeEnv(copy, original, &a)
 
-	return copy.Interface()
+	return a
 }
 
-func writeEnvFile(copy, original reflect.Value, file *os.File) {
+func writeEnv(copy, original reflect.Value, a *[]string) {
 
 	switch original.Kind() {
 
 	case reflect.Struct:
 		for i := 0; i < original.NumField(); i += 1 {
-
 			if original.Type().Field(i).Tag.Get("env") != "" && original.Field(i).String() != "" {
 				val := original.Field(i)
 				switch val.Kind() {
 				case reflect.Bool, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
 					value := strconv.FormatBool(val.Bool())
-					file.WriteString(original.Type().Field(i).Tag.Get("env") + "=" + value + "\n")
+					*a = append(*a, original.Type().Field(i).Tag.Get("env")+"="+value+"\n")
 				case reflect.String:
-					file.WriteString(original.Type().Field(i).Tag.Get("env") + "=" + val.String() + "\n")
+					*a = append(*a, original.Type().Field(i).Tag.Get("env")+"="+val.String()+"\n")
 				default:
 				}
 			}
-			writeEnvFile(copy.Field(i), original.Field(i), file)
+			writeEnv(copy.Field(i), original.Field(i), a)
 		}
+
 	default:
 		copy.Set(original)
 	}
@@ -103,4 +96,50 @@ func writeEnvFile(copy, original reflect.Value, file *os.File) {
 
 func init() {
 	RootCmd.AddCommand(createCmd)
+}
+
+func launchDocker(env []string, image string, cmd []string, dir string) {
+	cli, err := client.NewEnvClient()
+	if err != nil {
+
+		panic(err)
+	}
+
+	rc, err := cli.ImagePull(context.Background(), image, dockType.ImagePullOptions{})
+
+	_, err = io.Copy(ioutil.Discard, rc)
+	if err != nil {
+		panic(err)
+	}
+
+	err = rc.Close()
+	if err != nil {
+		panic(err)
+	}
+
+	resp, err := cli.ContainerCreate(context.Background(),
+		&container.Config{
+			Image: image,
+			Env:   env,
+			Cmd:   cmd,
+		},
+		&container.HostConfig{
+			AutoRemove: false,
+			Mounts: []mount.Mount{
+				{
+					Type:   mount.TypeBind,
+					Source: dir,
+					Target: "/sweady/data",
+				},
+			},
+		},
+		&network.NetworkingConfig{},
+		"sweady")
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	if err := cli.ContainerStart(context.Background(), resp.ID, dockType.ContainerStartOptions{}); err != nil {
+		fmt.Println(err)
+	}
 }
