@@ -20,9 +20,9 @@ type Configuration struct {
 		} `json:"aws"`
 	} `json:"provider"`
 	Component struct {
-		Log        bool `json:"log" env:"log"`
-		Monitoring bool `json:"monitoring" env:"monitoring"`
-		Sweady     bool `json:"sweady" env:"sweady"`
+		Log        bool `json:"log"`
+		Monitoring bool `json:"monitoring"`
+		Sweady     bool `json:"sweady"`
 	} `json:"component"`
 }
 

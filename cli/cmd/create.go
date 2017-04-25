@@ -80,9 +80,9 @@ func writeEnv(copy, original reflect.Value, a *[]string) {
 				switch val.Kind() {
 				case reflect.Bool, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
 					value := strconv.FormatBool(val.Bool())
-					*a = append(*a, original.Type().Field(i).Tag.Get("env")+"="+value+"\n")
+					*a = append(*a, original.Type().Field(i).Tag.Get("env")+"="+value)
 				case reflect.String:
-					*a = append(*a, original.Type().Field(i).Tag.Get("env")+"="+val.String()+"\n")
+					*a = append(*a, original.Type().Field(i).Tag.Get("env")+"="+val.String())
 				default:
 				}
 			}
