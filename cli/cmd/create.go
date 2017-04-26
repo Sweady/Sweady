@@ -124,7 +124,7 @@ func launchDocker(env []string, image string, cmd []string, dir string) {
 			Cmd:   cmd,
 		},
 		&container.HostConfig{
-			AutoRemove: false,
+			AutoRemove: true,
 			Mounts: []mount.Mount{
 				{
 					Type:   mount.TypeBind,
