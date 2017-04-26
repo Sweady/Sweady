@@ -15,4 +15,4 @@ __pycache__/
 /website/public/
 sweady_config.json
 .env
-/engine/data/
+data/
