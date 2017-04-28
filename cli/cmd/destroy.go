@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
+	"../docker"
 	"io/ioutil"
 	"os"
 )
@@ -30,8 +31,16 @@ var destroyCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
+		color.Green("Downloading sweady image")
+		_, err = docker.ImagePull("sweady/build:latest")
+
 		color.Green("Destroying cluster")
-		launchDocker(generateEnv(jsontype), "sweady/build:latest", []string{"make", "destroy", "provider=aws"}, jsontype.Header.DataDir)
+		docker.ContainerCreate(
+			"sweady/build:latest",
+			GenerateEnv(jsontype),
+			[]string{"make", "destroy", "provider=aws"},
+			jsontype.Header.DataDir,
+			true)
 		return
 	},
 }
