@@ -11,10 +11,6 @@ variable "aws_region" {
   description = "AWS Region"
 }
 
-variable "aws_ssh_key" {
-  description = "ssh key"
-}
-
 variable "aws_type_manager" {
   default     = "t2.micro"
   description = "AWS type for manager"
@@ -38,4 +34,9 @@ variable "aws_ami" {
 variable "swarm_manager" {
   default     = 1
   description = "Number of manager in the cluster"
+}
+
+variable "allow_ip" {
+  default     = "0.0.0.0/0"
+  description = "Allow ip for acces private ressource"
 }
