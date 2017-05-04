@@ -3,7 +3,6 @@ aws_access_key      = "CHANGE_ME"
 aws_region          = "eu-west-1"
 aws_type_node       = "t2.micro"
 aws_type_manager    = "t2.micro"
-aws_ssh_key         = "~/.ssh/id_rsa"
 aws_key_name        = "Home"
 swarm_nodes         = 2
 swarm_manager       = 3
