@@ -1,0 +1,22 @@
+language:                                                                                                                                                                                                           
+  node_js
+node_js:                                                                                                                                                                                                            
+  - 5.7.0
+branches:                                                                                                                                                                                                           
+  only:
+    - master
+
+install:
+  - if [[ $TRAVIS_PULL_REQUEST == 'false' ]]; then wget https://github.com/splitsh/lite/releases/download/v1.0.1/lite_linux_amd64.tar.gz ;fi
+  - if [[ $TRAVIS_PULL_REQUEST == 'false' ]]; then tar -zxvf lite_linux_amd64.tar.gz && rm -rf lite_linux_amd64.tar.gz ;fi
+  - if [[ $TRAVIS_PULL_REQUEST == 'false' ]]; then git remote add cli     https://$GH_TOKEN@github.com/Sweady/cli.git ;fi
+  - if [[ $TRAVIS_PULL_REQUEST == 'false' ]]; then git remote add website https://$GH_TOKEN@github.com/Sweady/website.git ;fi
+  - if [[ $TRAVIS_PULL_REQUEST == 'false' ]]; then git remote add engine  https://$GH_TOKEN@github.com/Sweady/engine.git  ;fi
+  #- if [[ $TRAVIS_PULL_REQUEST == 'false' ]]; then ./splitsh-lite --prefix=cli/     --origin=cli/master ;fi
+  #- if [[ $TRAVIS_PULL_REQUEST == 'false' ]]; then ./splitsh-lite --prefix=website/ --origin=website/master ;fi
+  #- if [[ $TRAVIS_PULL_REQUEST == 'false' ]]; then ./splitsh-lite --prefix=engine/  --origin=engine/master ;fi
+
+script:
+  - if [[ $TRAVIS_PULL_REQUEST == 'false' ]]; then git subtree push --prefix=cli/      cli  master ;fi
+  - if [[ $TRAVIS_PULL_REQUEST == 'false' ]]; then git subtree push --prefix=website/  website master ;fi
+  - if [[ $TRAVIS_PULL_REQUEST == 'false' ]]; then git subtree push --prefix=engine/   engine master ;fi
