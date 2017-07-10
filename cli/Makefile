@@ -3,7 +3,7 @@ VERSION := $(shell git describe --tags)
 
 build:	 		build				## Build for MacOS
 build-all:		build-all			## Build for all plateform
-fmt:			fmt					## Clear indentation in code
+fmt:			fmt				## Clear indentation in code
 
 build: deps
 	go build -o bin/sweady-darwin
